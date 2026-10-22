@@ -441,8 +441,8 @@
    CONFIGURACIÓN — completá con los datos de tu proyecto de Supabase
    (Supabase → Project Settings → API)
    ===================================================================== */
-const SUPABASE_URL      = 'https://TU-PROYECTO.supabase.co';
-const SUPABASE_ANON_KEY = 'TU-ANON-KEY';
+const SUPABASE_URL      = 'https://yzfywajkxqxxxfmtttsh.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_QoujSFnNshzKudJ7WNloVw_XcHuER8_';
 
 // Dominio "falso" para armar el email interno a partir del DNI (no se envían mails).
 const EMAIL_DOMAIN = 'zeroxsient.app';
@@ -457,9 +457,6 @@ const PRESETS = [
 ];
 
 /* ===================================================================== */
-
-const SUPABASE_URL = 'https://yzfywajkxqxxxfmtttsh.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_QoujSFnNshzKudJ7WNloVw_XcHuER8_';
 
 const configured = !SUPABASE_URL.includes('TU-PROYECTO') && !SUPABASE_ANON_KEY.includes('TU-ANON');
 const sb = configured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
