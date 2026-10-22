@@ -512,10 +512,15 @@ const cleanDni = v => String(v || '').replace(/\D/g, '');
 const validDni = v => /^\d{7,8}$/.test(v);
 
 function authMsg(err){
+  console.log('auth error →', err?.status, err?.code, err?.message);
+  const code = err?.code || '';
   const m = (err?.message || '').toLowerCase();
+  if (code === 'weak_password')
+    return 'Supabase rechazó la contraseña: ' + (err.message || 'es demasiado débil') + ' (revisá la configuración de contraseñas en Supabase).';
+  if (code === 'email_address_invalid') return 'El DNI generó un email inválido. Revisá el dominio configurado.';
+  if (code === 'signup_disabled') return 'Los registros están desactivados en Supabase.';
   if (m.includes('invalid login')) return 'DNI o contraseña incorrectos.';
   if (m.includes('already registered') || m.includes('already been registered')) return 'Ya existe una cuenta con ese DNI. Probá ingresar.';
-  if (m.includes('password')) return 'La contraseña debe tener al menos 6 caracteres.';
   if (m.includes('rate limit')) return 'Demasiados intentos. Esperá un momento y probá de nuevo.';
   if (m.includes('network') || m.includes('fetch')) return 'No pudimos conectar. Revisá tu internet.';
   return err?.message || 'Ocurrió un error. Probá de nuevo.';
