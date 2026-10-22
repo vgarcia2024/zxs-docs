@@ -203,43 +203,46 @@ textarea.input{resize:vertical;min-height:70px}
 .check input{width:18px;height:18px;accent-color:var(--accent)}
 
 /* ---------- Carpetas / datos ---------- */
-.folders{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
-.folder{
-  background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;
-  text-align:left;transition:.15s;display:flex;flex-direction:column;gap:12px;
+.flist{display:flex;flex-direction:column;gap:10px;margin:0 0 18px}
+.fitem{
+  display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;text-align:left;transition:.15s;
 }
-.folder:hover{border-color:var(--accent)}
-.folder .ic{width:40px;height:40px;border-radius:12px;background:var(--accent);color:#000;display:grid;place-items:center}
-.folder .ic svg{width:20px;height:20px}
-.folder b{font-size:15px;display:block;color:#fff}
-.folder small{color:var(--muted);font-size:13px}
-.folder.add{border:2px dashed #3a3a3a;background:transparent;align-items:center;justify-content:center;color:var(--muted);text-align:center;min-height:118px}
-.folder.add:hover{color:var(--accent);border-color:var(--accent)}
+.fitem:hover{border-color:var(--accent)}
+.fitem .ic{width:42px;height:42px;border-radius:12px;background:var(--accent);color:#000;display:grid;place-items:center;flex:none}
+.fitem .ic svg{width:20px;height:20px}
+.fitem .tx{flex:1;min-width:0}
+.fitem .tx b{display:block;font-size:16px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fitem .tx small{color:var(--muted);font-size:13px}
+.go{color:var(--muted);flex:none;display:grid;place-items:center}
+.go svg{width:18px;height:18px}
 
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.chip{padding:9px 14px;border:2px solid #333;border-radius:999px;font-size:14px;font-weight:700;background:transparent;color:#fff;transition:.15s}
+.chip{padding:8px 13px;border:2px solid #333;border-radius:999px;font-size:13px;font-weight:700;background:transparent;color:#fff;transition:.15s}
 .chip:hover{border-color:var(--accent)}
-.chip.on{border-color:var(--accent);background:var(--accent);color:#000}
+.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:12px}
 
-.rows{display:flex;flex-direction:column;gap:12px;margin:14px 0 18px}
-.row label{display:block;font-size:13px;font-weight:700;color:#e5e5e5;margin-bottom:5px}
-.rowin{display:flex;gap:6px;align-items:center}
-.rowin .input{flex:1;min-width:0}
-.back{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px}
-.folder-title{font-size:22px;font-weight:900}
-.addline{display:flex;gap:8px}
-.addline .input{flex:1;min-width:0}
+.dlist{display:flex;flex-direction:column;gap:10px;margin:0 0 12px}
+.dato{display:flex;align-items:center;gap:6px;padding:4px 6px 4px 16px;background:var(--surface);border:1px solid var(--line);border-radius:16px}
+.dato .dm{flex:1;min-width:0;text-align:left;padding:10px 0}
+.dato .dm small{display:block;color:var(--muted);font-size:12px;font-weight:700}
+.dato .dm b{display:block;font-size:17px;font-weight:800;word-break:break-word;color:#fff}
+.dato .dm b.none{color:#6f6f6f;font-weight:600;font-size:15px}
+.dato .dm:active b{color:var(--accent)}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap;margin-top:26px;padding-top:16px;border-top:1px solid var(--line)}
+.foot-links button{color:var(--muted);font-size:13px;font-weight:700;padding:4px 0}
+.foot-links button:hover{color:#fff}
+.foot-links .del{color:var(--danger)}
 
 /* ---------- Boletas ---------- */
-.sub{font-size:17px;font-weight:900;margin:26px 0 4px;padding-top:20px;border-top:1px solid var(--line)}
-.bol-list{display:flex;flex-direction:column;gap:8px;margin:14px 0}
-.bol{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.bol-list{display:flex;flex-direction:column;gap:8px;margin:0}
+.bol{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px 10px 10px;border:1px solid var(--line);border-radius:14px;background:var(--surface);text-align:left;transition:.15s}
+.bol:hover{border-color:var(--accent)}
 .bol .bi{width:44px;height:44px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:900;font-size:12px;flex:none}
-.bol .tx{flex:1;min-width:0;text-align:left}
-.bol .tx b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bol .tx{flex:1;min-width:0}
+.bol .tx b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bol .tx small{color:var(--muted);font-size:12px}
-.bol .open{flex:1;min-width:0;display:flex;align-items:center;gap:12px;text-align:left}
-.upl{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.upl{display:flex;gap:8px;flex-wrap:wrap}
 .upl .btn{flex:1;min-width:130px}
 .viewer img{width:100%;display:block;border-radius:14px;background:#000}
 .viewer .pdfbox{padding:34px 16px;text-align:center;border:2px dashed #333;border-radius:var(--radius);color:var(--muted);margin-bottom:6px}
@@ -303,10 +306,7 @@ textarea.input{resize:vertical;min-height:70px}
   <div class="wrap">
     <div class="brand">
       <div class="logo">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <rect width="24" height="24" rx="6" fill="#000"/>
-          <path d="M7 7h10L7 17h10" fill="none" stroke="#ffd100" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
       </div>
       <div>Zero X Siento<small>Pago Fácil</small></div>
     </div>
@@ -527,14 +527,10 @@ const SUPABASE_ANON_KEY = 'sb_publishable_QoujSFnNshzKudJ7WNloVw_XcHuER8_';
 // Dominio "falso" para armar el email interno a partir del DNI (no se envían mails).
 const EMAIL_DOMAIN = 'zeroxsient.app';
 
-// Plantillas de carpetas sugeridas para el cliente
-const PRESETS = [
-  { empresa: 'EDEN (luz)',               campos: ['NIS', 'Número de cliente'] },
-  { empresa: 'Litoral Gas',              campos: ['Número de cliente', 'Número de persona'] },
-  { empresa: 'Municipalidad San Nicolás', campos: ['Número de inmueble'] },
-  { empresa: 'ARBA',                     campos: ['Partida inmobiliaria', 'Patente automotor'] },
-  { empresa: 'Otra empresa',             campos: [] },
-];
+// Ideas de nombre al crear una carpeta (el cliente puede escribir el que quiera)
+const IDEAS_CARPETA = ['Luz (EDEN)', 'Gas', 'Municipalidad', 'ARBA', 'Casa', 'Auto'];
+// Ideas de nombre al agregar un dato dentro de una carpeta
+const IDEAS_DATO = ['Número de cliente', 'NIS', 'Titular', 'Partida', 'Patente'];
 
 // Boletas
 const BOLETAS_BUCKET = 'boletas';
@@ -558,6 +554,10 @@ const state = {
   user: null, profile: null,
   tramites: [], carpetas: [],
   openCarpeta: null,
+  docsView: 'list',   // 'list' | 'newFolder' | 'folder' | 'dato'
+  folderTab: 'datos', // 'datos' | 'boletas'
+  editDato: null,     // null | 'new' | id
+  viewBoleta: null,
   authMode: 'login',
   adminEdit: null, // null = lista, 'new' o id
   adminTab: 'tramites', // 'tramites' | 'local'
@@ -572,6 +572,7 @@ const ICON = {
   edit:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z"/></svg>',
   plus:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" width="22" height="22"><path d="M12 5v14M5 12h14"/></svg>',
   back:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>',
+  chev:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
 };
 
 /* ---------------- Utilidades UI ---------------- */
@@ -851,110 +852,159 @@ async function loadCarpetas(){
   state.carpetas = error ? [] : (data || []);
 }
 
+const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
+const fechaAR = iso => new Date(iso).toLocaleDateString('es-AR', { timeZone: TZ });
+const curFolder = () => state.carpetas.find(x => x.id === state.openCarpeta);
+
 function openDocs(){
   if (!state.user) { openAuth('login'); return; }
-  state.openCarpeta = null; renderDocs(); openModal('m-docs');
+  state.openCarpeta = null; state.editDato = null; state.folderTab = 'datos';
+  state.docsView = 'list'; renderDocs(); openModal('m-docs');
 }
 
-const plural = (n, s, p) => `${n} ${n === 1 ? s : p}`;
+function goDocs(view, extra = {}){
+  Object.assign(state, extra); state.docsView = view;
+  renderDocs(); $('#docsBody').scrollTop = 0;
+}
 
 function renderDocs(){
-  const body = $('#docsBody');
-  const c = state.carpetas.find(x => x.id === state.openCarpeta);
-  if (state.openCarpeta === 'new') return renderNewFolder(body);
-  if (c) return renderFolder(body, c);
-
-  $('#docsTitle').textContent = 'Mis documentos';
-  body.innerHTML = `
-    <p style="color:var(--muted);margin-bottom:16px">Guardá acá tus números de cliente, NIS, partidas y fotos de tus boletas. Solo vos podés verlos.</p>
-    <div class="folders">
-      ${state.carpetas.map(f => {
-        const nd = (f.carpeta_datos || []).length, nb = (f.boletas || []).length;
-        return `
-        <button class="folder" data-folder="${f.id}">
-          <div class="ic">${ICON.folder}</div>
-          <div><b>${esc(f.empresa)}</b><small>${plural(nd, 'dato', 'datos')}${nb ? ' · ' + plural(nb, 'boleta', 'boletas') : ''}</small></div>
-        </button>`;
-      }).join('')}
-      <button class="folder add" data-folder="new">${ICON.plus}<span style="font-weight:600;font-size:14px;margin-top:6px">Nueva carpeta</span></button>
-    </div>`;
+  const body = $('#docsBody'), c = curFolder(), v = state.docsView;
+  if (v === 'newFolder') return renderNewFolder(body);
+  if (c && v === 'dato') return renderDatoForm(body, c);
+  if (c && v === 'folder') return renderFolder(body, c);
+  state.docsView = 'list'; return renderFolderList(body);
 }
 
+/* ----- 1) Lista de carpetas ----- */
+function renderFolderList(body){
+  $('#docsTitle').textContent = 'Mis documentos';
+  if (!state.carpetas.length){
+    body.innerHTML = `
+      <div class="empty" style="margin-bottom:16px">Todavía no tenés carpetas.<br>Creá una por empresa o trámite y guardá ahí tus datos y tus boletas.</div>
+      <button class="btn primary block" data-newfolder>Crear mi primera carpeta</button>`;
+    return;
+  }
+  body.innerHTML = `
+    <p class="hint" style="margin:0 0 14px;font-size:14px">Tus carpetas. Solo vos podés verlas.</p>
+    <div class="flist">
+      ${state.carpetas.map(f => {
+        const nd = (f.carpeta_datos || []).length, nb = (f.boletas || []).length;
+        const sub = [nd ? plural(nd, 'dato', 'datos') : '', nb ? plural(nb, 'boleta', 'boletas') : ''].filter(Boolean).join(' · ') || 'Vacía';
+        return `
+        <button class="fitem" data-folder="${f.id}">
+          <div class="ic">${ICON.folder}</div>
+          <div class="tx"><b>${esc(f.empresa)}</b><small>${sub}</small></div>
+          <span class="go">${ICON.chev}</span>
+        </button>`;
+      }).join('')}
+    </div>
+    <button class="btn primary block" data-newfolder>Nueva carpeta</button>`;
+}
+
+/* ----- 2) Nueva carpeta: solo el nombre ----- */
 function renderNewFolder(body){
   $('#docsTitle').textContent = 'Nueva carpeta';
   body.innerHTML = `
     <button class="link back" data-back>${ICON.back} Volver</button>
-    <p style="color:var(--muted);margin:6px 0 14px">Elegí una empresa o escribí el nombre.</p>
-    <div class="chips" id="presetChips">
-      ${PRESETS.map((p, i) => `<button type="button" class="chip" data-preset="${i}">${esc(p.empresa)}</button>`).join('')}
-    </div>
     <form id="newFolderForm">
-      <label class="field"><span>Nombre de la empresa o trámite</span>
-        <input class="input" id="nfName" placeholder="Ej: EDEN" required maxlength="60">
+      <label class="field"><span>¿Cómo querés llamarla?</span>
+        <input class="input" id="nfName" placeholder="Ej: Luz de casa" required maxlength="60" autocomplete="off">
       </label>
+      <div class="chips">
+        ${IDEAS_CARPETA.map(x => `<button type="button" class="chip" data-fill="#nfName" data-val="${esc(x)}">${esc(x)}</button>`).join('')}
+      </div>
       <p class="err" id="nfErr"></p>
       <button class="btn primary block" type="submit">Crear carpeta</button>
     </form>`;
-  body._preset = null;
+  setTimeout(() => $('#nfName')?.focus(), 60);
 }
 
-function boletaExt(b){
-  if (b.mime === 'application/pdf') return 'PDF';
-  return 'IMG';
-}
+/* ----- 3) Carpeta abierta: solapas Datos / Boletas ----- */
+function boletaExt(b){ return b.mime === 'application/pdf' ? 'PDF' : 'IMG'; }
 
 function renderFolder(body, c){
   $('#docsTitle').textContent = c.empresa;
   const datos = [...(c.carpeta_datos || [])].sort((a, b) => a.created_at.localeCompare(b.created_at));
   const boletas = [...(c.boletas || [])].sort((a, b) => b.created_at.localeCompare(a.created_at));
-  body.innerHTML = `
-    <button class="link back" data-back>${ICON.back} Volver</button>
-    <div class="rows" id="rows">
-      ${datos.length ? datos.map(d => `
-        <div class="row" data-id="${d.id}">
-          <label>${esc(d.etiqueta)}</label>
-          <div class="rowin">
-            <input class="input" value="${esc(d.valor)}" placeholder="Sin cargar" autocomplete="off">
-            <button class="iconbtn" data-act="copy" aria-label="Copiar">${ICON.copy}</button>
-            <button class="iconbtn" data-act="del" aria-label="Eliminar">${ICON.trash}</button>
-          </div>
-        </div>`).join('') : `<div class="empty">Todavía no cargaste datos en esta carpeta.</div>`}
-    </div>
-    <form class="addline" id="addDato">
-      <input class="input" id="newEtiqueta" placeholder="Agregar dato (ej: Número de cliente)" maxlength="60" required>
-      <button class="btn primary" type="submit">Agregar</button>
-    </form>
+  const tab = state.folderTab;
 
-    <h3 class="sub">Boletas</h3>
-    <p class="hint" style="margin:0">Foto o PDF de tus boletas, hasta 5 MB cada una. Son privadas: solo vos podés verlas.</p>
-    <div class="bol-list">
-      ${boletas.length ? boletas.map(b => `
-        <div class="bol" data-bid="${b.id}">
-          <button class="open" data-bolview="${b.id}" aria-label="Ver ${esc(b.nombre)}">
-            <div class="bi">${boletaExt(b)}</div>
-            <div class="tx"><b>${esc(b.nombre)}</b><small>${new Date(b.created_at).toLocaleDateString('es-AR', { timeZone: TZ })}</small></div>
+  const datosTab = datos.length ? `
+    <div class="dlist">
+      ${datos.map(d => `
+        <div class="dato">
+          <button class="dm" data-dcopy="${d.id}" aria-label="Copiar ${esc(d.etiqueta)}">
+            <small>${esc(d.etiqueta)}</small>
+            <b class="${d.valor ? '' : 'none'}">${d.valor ? esc(d.valor) : 'Sin cargar'}</b>
           </button>
-          <button class="iconbtn" data-boldel="${b.id}" aria-label="Eliminar boleta">${ICON.trash}</button>
-        </div>`).join('') : `<div class="empty">Todavía no subiste boletas en esta carpeta.</div>`}
+          <button class="iconbtn" data-dedit="${d.id}" aria-label="Editar">${ICON.edit}</button>
+        </div>`).join('')}
     </div>
-    <input class="input" id="bolName" placeholder="Nombre (ej: Luz octubre) — opcional" maxlength="60">
-    <div class="upl">
+    <p class="hint" style="margin:0 0 14px">Tocá un dato para copiarlo.</p>
+    <button class="btn primary block" data-dnew>Agregar dato</button>`
+  : `
+    <div class="empty" style="margin-bottom:16px">Guardá acá lo que necesites: número de cliente, titular, partida…</div>
+    <button class="btn primary block" data-dnew>Agregar dato</button>`;
+
+  const boletasTab = `
+    <p class="hint" style="margin:0 0 14px">Foto o PDF, hasta 5 MB. Son privadas: solo vos las ves.</p>
+    <div class="upl" style="margin-bottom:16px">
       <button class="btn primary" type="button" data-bolpick="cam">Sacar foto</button>
       <button class="btn" type="button" data-bolpick="file">Elegir archivo</button>
     </div>
+    ${boletas.length ? `
+    <div class="bol-list">
+      ${boletas.map(b => `
+        <button class="bol" data-bolview="${b.id}" aria-label="Ver ${esc(b.nombre)}">
+          <div class="bi">${boletaExt(b)}</div>
+          <div class="tx"><b>${esc(b.nombre)}</b><small>${fechaAR(b.created_at)}</small></div>
+          <span class="go">${ICON.chev}</span>
+        </button>`).join('')}
+    </div>` : `<div class="empty">Todavía no subiste boletas en esta carpeta.</div>`}
     <input type="file" id="bolCam" accept="image/*" capture="environment" class="hidden">
-    <input type="file" id="bolFile" accept="image/*,application/pdf" class="hidden">
+    <input type="file" id="bolFile" accept="image/*,application/pdf" class="hidden">`;
 
-    <div style="margin-top:22px;padding-top:16px;border-top:1px solid var(--line)">
-      <button class="btn sm danger" id="delFolder">Eliminar carpeta</button>
+  body.innerHTML = `
+    <button class="link back" data-back>${ICON.back} Mis carpetas</button>
+    <div class="tabs">
+      <button data-ftab="datos" class="${tab === 'datos' ? 'on' : ''}">Datos${datos.length ? ` (${datos.length})` : ''}</button>
+      <button data-ftab="boletas" class="${tab === 'boletas' ? 'on' : ''}">Boletas${boletas.length ? ` (${boletas.length})` : ''}</button>
+    </div>
+    ${tab === 'datos' ? datosTab : boletasTab}
+    <div class="foot-links">
+      <button data-frename>Renombrar carpeta</button>
+      <button class="del" id="delFolder">Eliminar carpeta</button>
     </div>`;
 }
 
+/* ----- 4) Dato: un solo formulario para agregar y editar ----- */
+function renderDatoForm(body, c){
+  const id = state.editDato;
+  const d = id && id !== 'new' ? (c.carpeta_datos || []).find(x => x.id === id) : null;
+  $('#docsTitle').textContent = d ? 'Editar dato' : 'Nuevo dato';
+  body.innerHTML = `
+    <button class="link back" data-back>${ICON.back} ${esc(c.empresa)}</button>
+    <form id="datoForm">
+      <label class="field"><span>¿Qué dato es?</span>
+        <input class="input" id="dEtiqueta" value="${esc(d?.etiqueta || '')}" placeholder="Ej: Número de cliente" maxlength="60" required autocomplete="off">
+      </label>
+      ${d ? '' : `<div class="chips">
+        ${IDEAS_DATO.map(x => `<button type="button" class="chip" data-fill="#dEtiqueta" data-next="#dValor" data-val="${esc(x)}">${esc(x)}</button>`).join('')}
+      </div>`}
+      <label class="field"><span>Valor</span>
+        <input class="input" id="dValor" value="${esc(d?.valor || '')}" placeholder="Ej: 123456" maxlength="200" autocomplete="off">
+      </label>
+      <p class="err" id="dErr"></p>
+      <button class="btn primary block" type="submit">Guardar</button>
+      ${d ? `<div class="foot-links"><button type="button" class="del" data-ddel>Eliminar este dato</button></div>` : ''}
+    </form>`;
+  setTimeout(() => (d ? $('#dValor') : $('#dEtiqueta'))?.focus(), 60);
+}
+
+/* ----- Boletas: subir, ver, renombrar, eliminar ----- */
 async function uploadBoleta(file){
   if (!file || state.uploading) return;
-  const c = state.carpetas.find(x => x.id === state.openCarpeta); if (!c) return;
-  const typed = ($('#bolName')?.value || '').trim();
-  const nombre = typed || 'Boleta ' + new Date().toLocaleDateString('es-AR', { timeZone: TZ });
+  const c = curFolder(); if (!c) return;
+  const nombre = 'Boleta ' + fechaAR(new Date().toISOString());
 
   let blob = file, mime, ext;
   if (file.type === 'application/pdf'){ mime = 'application/pdf'; ext = 'pdf'; }
@@ -973,7 +1023,7 @@ async function uploadBoleta(file){
     const { data, error } = await sb.from('boletas').insert({ carpeta_id: c.id, nombre, path, mime }).select().single();
     if (error){ await sb.storage.from(BOLETAS_BUCKET).remove([path]); throw error; }
     (c.boletas = c.boletas || []).push(data);
-    renderDocs(); toast('Boleta guardada.');
+    state.folderTab = 'boletas'; renderDocs(); toast('Boleta guardada.');
   } catch (ex){
     console.log('boleta error →', ex);
     toast('No se pudo subir la boleta.');
@@ -982,128 +1032,150 @@ async function uploadBoleta(file){
 }
 
 async function viewBoleta(id){
-  const c = state.carpetas.find(x => x.id === state.openCarpeta);
-  const b = (c?.boletas || []).find(x => x.id === id); if (!b) return;
+  const b = (curFolder()?.boletas || []).find(x => x.id === id); if (!b) return;
   const { data, error } = await sb.storage.from(BOLETAS_BUCKET).createSignedUrl(b.path, 300);
   if (error || !data?.signedUrl) return toast('No se pudo abrir la boleta.');
   const url = data.signedUrl, isPdf = b.mime === 'application/pdf';
+  state.viewBoleta = id;
   $('#viewTitle').textContent = b.nombre;
   $('#viewBody').innerHTML =
     (isPdf ? `<div class="pdfbox">Documento PDF</div>` : `<img src="${esc(url)}" alt="${esc(b.nombre)}">`) +
-    `<div class="row-actions" style="margin-top:14px"><a class="btn primary" href="${esc(url)}" target="_blank" rel="noopener">${isPdf ? 'Abrir PDF' : 'Abrir en pestaña nueva'}</a></div>`;
+    `<div class="row-actions" style="margin-top:14px"><a class="btn primary" href="${esc(url)}" target="_blank" rel="noopener">${isPdf ? 'Abrir PDF' : 'Abrir en pestaña nueva'}</a></div>
+     <div class="foot-links" style="margin-top:18px"><button data-vren>Renombrar</button><button class="del" data-vdel>Eliminar</button></div>`;
   openModal('m-viewer');
 }
 
+async function renameBoleta(id){
+  const b = (curFolder()?.boletas || []).find(x => x.id === id); if (!b) return;
+  const n = prompt('Nombre de la boleta', b.nombre); if (n === null) return;
+  const nombre = n.trim().slice(0, 60); if (!nombre || nombre === b.nombre) return;
+  const { error } = await sb.from('boletas').update({ nombre }).eq('id', id);
+  if (error) return toast('No se pudo renombrar.');
+  b.nombre = nombre; $('#viewTitle').textContent = nombre; renderDocs(); toast('Nombre guardado.');
+}
+
 async function deleteBoleta(id){
-  const c = state.carpetas.find(x => x.id === state.openCarpeta);
+  const c = curFolder();
   const b = (c?.boletas || []).find(x => x.id === id); if (!b) return;
   if (!confirm('¿Eliminar esta boleta?')) return;
   const { error } = await sb.from('boletas').delete().eq('id', id);
   if (error) return toast('No se pudo eliminar.');
   sb.storage.from(BOLETAS_BUCKET).remove([b.path]); // si falla, el archivo queda huérfano pero invisible
   c.boletas = c.boletas.filter(x => x.id !== id);
-  renderDocs(); toast('Boleta eliminada.');
+  closeModal('m-viewer'); renderDocs(); toast('Boleta eliminada.');
 }
 
-// Delegación de eventos dentro del modal de datos
+$('#viewBody').addEventListener('click', e => {
+  if (e.target.closest('[data-vren]')) renameBoleta(state.viewBoleta);
+  if (e.target.closest('[data-vdel]')) deleteBoleta(state.viewBoleta);
+});
+
+/* ----- Eventos del modal de datos ----- */
 $('#docsBody').addEventListener('click', async e => {
-  const body = $('#docsBody');
-  const f = e.target.closest('[data-folder]');
-  if (f){ state.openCarpeta = f.dataset.folder; renderDocs(); return; }
-  if (e.target.closest('[data-back]')){ state.openCarpeta = null; renderDocs(); return; }
+  const t = e.target;
 
-  const pick = e.target.closest('[data-bolpick]');
+  const f = t.closest('[data-folder]');
+  if (f){ state.folderTab = 'datos'; return goDocs('folder', { openCarpeta: f.dataset.folder }); }
+  if (t.closest('[data-newfolder]')) return goDocs('newFolder');
+  if (t.closest('[data-back]')){
+    if (state.docsView === 'dato') return goDocs('folder', { editDato: null });
+    return goDocs('list', { openCarpeta: null });
+  }
+
+  const ft = t.closest('[data-ftab]');
+  if (ft){ state.folderTab = ft.dataset.ftab; return renderDocs(); }
+
+  const fill = t.closest('[data-fill]');
+  if (fill){
+    $(fill.dataset.fill).value = fill.dataset.val;
+    $(fill.dataset.next || fill.dataset.fill).focus();
+    return;
+  }
+
+  // Boletas
+  const pick = t.closest('[data-bolpick]');
   if (pick){ $(pick.dataset.bolpick === 'cam' ? '#bolCam' : '#bolFile').click(); return; }
-  const bv = e.target.closest('[data-bolview]');
+  const bv = t.closest('[data-bolview]');
   if (bv){ viewBoleta(bv.dataset.bolview); return; }
-  const bd = e.target.closest('[data-boldel]');
-  if (bd){ deleteBoleta(bd.dataset.boldel); return; }
 
-  const chip = e.target.closest('[data-preset]');
-  if (chip){
-    const p = PRESETS[+chip.dataset.preset];
-    body._preset = p;
-    $$('#presetChips .chip').forEach(c => c.classList.toggle('on', c === chip));
-    $('#nfName').value = p.empresa === 'Otra empresa' ? '' : p.empresa;
-    if (p.empresa === 'Otra empresa') $('#nfName').focus();
+  // Datos
+  if (t.closest('[data-dnew]')) return goDocs('dato', { editDato: 'new' });
+  const de = t.closest('[data-dedit]');
+  if (de) return goDocs('dato', { editDato: de.dataset.dedit });
+  const dc = t.closest('[data-dcopy]');
+  if (dc){
+    const d = (curFolder()?.carpeta_datos || []).find(x => x.id === dc.dataset.dcopy); if (!d) return;
+    if (!d.valor) return goDocs('dato', { editDato: d.id }); // sin valor: abre para cargarlo
+    try { await navigator.clipboard.writeText(d.valor); toast('Copiado: ' + d.etiqueta); } catch { toast('No se pudo copiar.'); }
     return;
   }
-
-  const act = e.target.closest('[data-act]');
-  if (act){
-    const row = act.closest('.row'); const id = row.dataset.id;
-    if (act.dataset.act === 'copy'){
-      const v = $('input', row).value;
-      if (!v) return toast('No hay nada para copiar.');
-      try { await navigator.clipboard.writeText(v); toast('Copiado.'); } catch { toast('No se pudo copiar.'); }
-    }
-    if (act.dataset.act === 'del'){
-      if (!confirm('¿Eliminar este dato?')) return;
-      const { error } = await sb.from('carpeta_datos').delete().eq('id', id);
-      if (error) return toast('No se pudo eliminar.');
-      const c = state.carpetas.find(x => x.id === state.openCarpeta);
-      c.carpeta_datos = c.carpeta_datos.filter(d => d.id !== id);
-      renderDocs(); toast('Dato eliminado.');
-    }
-    return;
+  if (t.closest('[data-ddel]')){
+    if (!confirm('¿Eliminar este dato?')) return;
+    const c = curFolder(), id = state.editDato;
+    const { error } = await sb.from('carpeta_datos').delete().eq('id', id);
+    if (error) return toast('No se pudo eliminar.');
+    c.carpeta_datos = c.carpeta_datos.filter(d => d.id !== id);
+    toast('Dato eliminado.'); return goDocs('folder', { editDato: null });
   }
 
-  if (e.target.id === 'delFolder'){
+  // Carpeta
+  if (t.closest('[data-frename]')){
+    const c = curFolder();
+    const n = prompt('Nuevo nombre de la carpeta', c.empresa); if (n === null) return;
+    const name = n.trim().slice(0, 60); if (!name || name === c.empresa) return;
+    const { error } = await sb.from('carpetas').update({ empresa: name }).eq('id', c.id);
+    if (error) return toast('No se pudo renombrar.');
+    c.empresa = name; state.carpetas.sort((a, b) => a.empresa.localeCompare(b.empresa));
+    renderDocs(); toast('Carpeta renombrada.'); return;
+  }
+  if (t.id === 'delFolder'){
     if (!confirm('¿Eliminar esta carpeta, sus datos y sus boletas?')) return;
-    const c = state.carpetas.find(x => x.id === state.openCarpeta);
+    const c = curFolder();
     const paths = (c?.boletas || []).map(b => b.path);
     const { error } = await sb.from('carpetas').delete().eq('id', state.openCarpeta);
     if (error) return toast('No se pudo eliminar.');
     if (paths.length) sb.storage.from(BOLETAS_BUCKET).remove(paths);
     state.carpetas = state.carpetas.filter(x => x.id !== state.openCarpeta);
-    state.openCarpeta = null; renderDocs(); toast('Carpeta eliminada.');
+    toast('Carpeta eliminada.'); return goDocs('list', { openCarpeta: null });
   }
 });
 
-// Guardar valor al salir del campo
-$('#docsBody').addEventListener('change', async e => {
-  if (e.target.id === 'bolCam' || e.target.id === 'bolFile'){
-    const file = e.target.files[0]; e.target.value = '';
-    uploadBoleta(file); return;
-  }
-  const row = e.target.closest('.row'); if (!row || e.target.tagName !== 'INPUT') return;
-  const valor = e.target.value.trim();
-  const { error } = await sb.from('carpeta_datos').update({ valor }).eq('id', row.dataset.id);
-  if (error) return toast('No se pudo guardar.');
-  const c = state.carpetas.find(x => x.id === state.openCarpeta);
-  const d = c.carpeta_datos.find(x => x.id === row.dataset.id); if (d) d.valor = valor;
-  toast('Guardado.');
+// Archivo elegido o foto sacada → se sube directo
+$('#docsBody').addEventListener('change', e => {
+  if (e.target.id !== 'bolCam' && e.target.id !== 'bolFile') return;
+  const file = e.target.files[0]; e.target.value = '';
+  uploadBoleta(file);
 });
 
 $('#docsBody').addEventListener('submit', async e => {
   e.preventDefault();
-  const body = $('#docsBody');
 
   if (e.target.id === 'newFolderForm'){
     const name = $('#nfName').value.trim(); if (!name) return;
     const btn = $('button[type=submit]', e.target); btn.disabled = true;
     const { data: carp, error } = await sb.from('carpetas').insert({ empresa: name }).select().single();
     if (error){ $('#nfErr').textContent = 'No se pudo crear la carpeta.'; btn.disabled = false; return; }
-    carp.carpeta_datos = [];
-    carp.boletas = [];
-    const preset = body._preset && body._preset.empresa === name ? body._preset : null;
-    if (preset && preset.campos.length){
-      const { data: ds } = await sb.from('carpeta_datos')
-        .insert(preset.campos.map(etiqueta => ({ carpeta_id: carp.id, etiqueta, valor: '' }))).select();
-      carp.carpeta_datos = ds || [];
-    }
+    carp.carpeta_datos = []; carp.boletas = [];
     state.carpetas.push(carp);
     state.carpetas.sort((a, b) => a.empresa.localeCompare(b.empresa));
-    state.openCarpeta = carp.id; renderDocs(); toast('Carpeta creada.');
+    state.folderTab = 'datos';
+    goDocs('folder', { openCarpeta: carp.id }); toast('Carpeta creada.');
   }
 
-  if (e.target.id === 'addDato'){
-    const etiqueta = $('#newEtiqueta').value.trim(); if (!etiqueta) return;
-    const { data, error } = await sb.from('carpeta_datos').insert({ carpeta_id: state.openCarpeta, etiqueta, valor: '' }).select().single();
-    if (error) return toast('No se pudo agregar.');
-    state.carpetas.find(x => x.id === state.openCarpeta).carpeta_datos.push(data);
-    renderDocs(); toast('Dato agregado.');
-    setTimeout(() => { const ins = $$('#rows .row input'); ins[ins.length - 1]?.focus(); }, 50);
+  if (e.target.id === 'datoForm'){
+    const c = curFolder(); if (!c) return;
+    const etiqueta = $('#dEtiqueta').value.trim(), valor = $('#dValor').value.trim();
+    if (!etiqueta) return;
+    const btn = $('button[type=submit]', e.target); btn.disabled = true;
+    const isNew = state.editDato === 'new';
+    const q = isNew
+      ? sb.from('carpeta_datos').insert({ carpeta_id: c.id, etiqueta, valor }).select().single()
+      : sb.from('carpeta_datos').update({ etiqueta, valor }).eq('id', state.editDato).select().single();
+    const { data, error } = await q;
+    if (error){ $('#dErr').textContent = 'No se pudo guardar. Probá de nuevo.'; btn.disabled = false; return; }
+    if (isNew) (c.carpeta_datos = c.carpeta_datos || []).push(data);
+    else { const i = c.carpeta_datos.findIndex(x => x.id === data.id); if (i > -1) c.carpeta_datos[i] = data; }
+    toast('Guardado.'); goDocs('folder', { editDato: null });
   }
 });
 
