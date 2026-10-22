@@ -458,6 +458,9 @@ const PRESETS = [
 
 /* ===================================================================== */
 
+const SUPABASE_URL = 'https://yzfywajkxqxxxfmtttsh.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_QoujSFnNshzKudJ7WNloVw_XcHuER8_';
+
 const configured = !SUPABASE_URL.includes('TU-PROYECTO') && !SUPABASE_ANON_KEY.includes('TU-ANON');
 const sb = configured ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
