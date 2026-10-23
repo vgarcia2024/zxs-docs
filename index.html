@@ -1297,7 +1297,7 @@ function renderAdminForm(body){
         <input class="input" id="tNombre" value="${esc(t.nombre)}" required maxlength="80" placeholder="Ej: Pago de luz (EDEN)">
       </label>
       <label class="field"><span>Descripción (opcional)</span>
-        <textarea class="input" id="tDesc" maxlength="300" placeholder="Qué incluye, qué documentación hay que traer, etc.">${esc(t.descripcion || '')}</textarea>
+        <textarea class="input" id="tDesc" maxlength="2000" placeholder="Qué incluye, qué documentación hay que traer, etc.">${esc(t.descripcion || '')}</textarea>
       </label>
       <label class="field"><span>Orden</span>
         <input class="input" id="tOrden" type="number" value="${t.orden ?? 0}">
