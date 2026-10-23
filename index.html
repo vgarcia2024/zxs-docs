@@ -279,8 +279,21 @@ textarea.input{resize:vertical;min-height:70px}
 .hg .input{padding:10px 12px;min-width:0}
 .cfolder{margin-bottom:24px}
 .cfolder h3{font-size:17px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
-.cfolder h3 svg{width:18px;height:18px;color:var(--accent);flex:none}
-.cfolder .sub{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 8px}
+.cfolder h3>svg{width:18px;height:18px;color:var(--accent);flex:none}
+.cfolder .sub{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 8px}
+
+/* Modal de administración: mismo tamaño en todas las solapas */
+.modal.admin{width:100%;max-width:720px;height:min(88vh,760px)}
+#adminBody{flex:1;min-height:0}
+@media (max-width:600px){.modal.admin{max-width:none;height:92vh}}
+
+/* Términos y privacidad */
+.legal h3{font-size:15px;margin:20px 0 6px;letter-spacing:-.01em}
+.legal h3:first-of-type{margin-top:4px}
+.legal p,.legal li{color:#cfcfcf;font-size:14px;line-height:1.55}
+.legal p+p{margin-top:8px}
+.legal ul{padding-left:20px;margin:6px 0}
+.legal .upd{color:var(--muted);font-size:12px}
 
 /* ---------- Menú de cuenta ---------- */
 .menu{position:relative}
@@ -401,6 +414,7 @@ textarea.input{resize:vertical;min-height:70px}
 <footer>
   <div class="wrap">
     <span>© <span id="year"></span> Zero X Siento · Pago Fácil</span>
+    <button class="link" data-terms>Términos y privacidad</button>
     <button class="link" id="btnInstall">Instalar en mi celular</button>
   </div>
 </footer>
@@ -457,6 +471,10 @@ textarea.input{resize:vertical;min-height:70px}
           <input class="input" id="authPass" type="password" autocomplete="current-password" placeholder="Mínimo 6 caracteres" required>
           <div class="hint" id="authHint">Si te registraste con tu DNI como contraseña, ingresalo igual acá.</div>
         </label>
+        <label class="check hidden" id="fTerms" style="align-items:flex-start">
+          <input type="checkbox" id="authTerms" style="margin-top:3px">
+          <span>Acepto los <button type="button" class="link" data-terms style="display:inline;font-size:inherit;text-align:left">Términos y Condiciones y la Política de Privacidad</button>.</span>
+        </label>
         <p class="err" id="authErr"></p>
         <button class="btn primary block" id="authSubmit" type="submit">Ingresar</button>
       </form>
@@ -477,7 +495,7 @@ textarea.input{resize:vertical;min-height:70px}
 
 <!-- ====================== MODAL: ADMIN ====================== -->
 <div class="overlay" id="m-admin" role="dialog" aria-modal="true">
-  <div class="modal wide">
+  <div class="modal wide admin">
     <div class="modal-head">
       <h2 id="adminTitle">Administrar trámites</h2>
       <button class="iconbtn" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
@@ -522,6 +540,52 @@ textarea.input{resize:vertical;min-height:70px}
   </div>
 </div>
 
+<!-- ====================== MODAL: TÉRMINOS Y PRIVACIDAD ====================== -->
+<div class="overlay" id="m-terms" role="dialog" aria-modal="true">
+  <div class="modal wide">
+    <div class="modal-head">
+      <h2>Términos y privacidad</h2>
+      <button class="iconbtn" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="modal-body legal">
+      <p class="upd">Versión de octubre de 2026</p>
+
+      <h3>1. Qué es este servicio</h3>
+      <p>Zero X Siento · Pago Fácil (San Nicolás de los Arroyos, Buenos Aires) pone a tu disposición esta aplicación para que puedas consultar nuestros trámites y, si querés, guardar tus números de cliente y fotos de tus boletas, para que te atendamos más rápido en el local. Es un servicio gratuito y opcional. La aplicación no realiza pagos ni trámites: eso se hace en el local.</p>
+
+      <h3>2. Qué datos usamos</h3>
+      <p>Para crear tu cuenta pedimos solamente lo mínimo:</p>
+      <ul>
+        <li>Tu <b>DNI</b>, que usamos como usuario para ingresar.</li>
+        <li>Tu <b>nombre y apellido</b>, para identificarte cuando te atendemos.</li>
+        <li>Una <b>contraseña</b>. Podés usar tu mismo DNI al principio, pero te recomendamos cambiarla.</li>
+      </ul>
+      <p>No te pedimos domicilio, teléfono, correo electrónico ni ningún otro dato personal para crear la cuenta.</p>
+      <p>Todo lo demás (números de cliente, NIS, partidas, titulares, fotos o PDF de boletas) lo cargás vos, únicamente si querés. Tené en cuenta que una boleta puede mostrar datos como tu nombre, domicilio o consumos, así que subí solo lo que necesites.</p>
+
+      <h3>3. Para qué los usamos</h3>
+      <p>Solamente para que puedas ingresar a tu cuenta, ver lo que guardaste y para que el personal del local pueda atenderte más rápido. No los usamos para publicidad, no los vendemos ni los cedemos a terceros, y no los usamos para ninguna otra finalidad.</p>
+
+      <h3>4. Quién puede verlos</h3>
+      <p>Vos, con tu DNI y tu contraseña. También el personal autorizado de Zero X Siento, que puede ver lo que guardaste cuando te atiende o cuando, a pedido tuyo, te ayuda a crear la cuenta o a cargar tus datos y boletas. Si tu cuenta fue creada en el local, el personal confirmó que aceptaste estos términos. Las fotos y PDF de boletas se guardan en un espacio privado, no público.</p>
+      <p>Para funcionar, la aplicación usa un proveedor de servicios en la nube (Supabase), cuyos servidores pueden estar ubicados fuera de Argentina.</p>
+
+      <h3>5. Tus derechos</h3>
+      <p>De acuerdo con la Ley 25.326 de Protección de Datos Personales, podés en cualquier momento acceder a tus datos, corregirlos o actualizarlos y pedir que los eliminemos. Desde tu cuenta podés ver, editar y borrar tus datos, carpetas y boletas. Si querés dar de baja tu cuenta y que borremos todo, pedilo en el local o por WhatsApp.</p>
+      <p>El derecho de acceso se puede ejercer en forma gratuita a intervalos no inferiores a seis meses, salvo que se acredite un interés legítimo. La Agencia de Acceso a la Información Pública (AAIP), órgano de control de la Ley 25.326, atiende las denuncias y reclamos de quienes consideren afectados sus derechos.</p>
+
+      <h3>6. Seguridad</h3>
+      <p>Usamos medidas técnicas razonables para proteger tu información (ingreso con contraseña y espacio privado para las boletas), pero ningún sistema es totalmente infalible. Cuidá tu contraseña, no la compartas y, si podés, cambiala por una distinta de tu DNI.</p>
+
+      <h3>7. Uso del servicio y cambios</h3>
+      <p>Los datos que cargás son tu responsabilidad: revisá que sean correctos. La aplicación es una ayuda para agilizar la atención; no reemplaza tus boletas ni comprobantes originales y no es un comprobante de pago. Podemos modificar o suspender el servicio y actualizar estos términos; la versión vigente estará siempre disponible en esta pantalla.</p>
+      <p>Responsable de los datos: Zero X Siento · Pago Fácil, San Nicolás de los Arroyos, Provincia de Buenos Aires.</p>
+
+      <button class="btn primary block" data-close style="margin-top:22px">Entendido</button>
+    </div>
+  </div>
+</div>
+
 <!-- ====================== MODAL: VER BOLETA (va último para quedar arriba del resto) ====================== -->
 <div class="overlay" id="m-viewer" role="dialog" aria-modal="true">
   <div class="modal">
@@ -560,6 +624,9 @@ const BOLETA_MAX_BYTES = 5 * 1024 * 1024;
 // Si en tu base se llama distinto, cambiala acá.
 const CARPETA_OWNER_COL = 'user_id';
 
+// Versión del texto de términos y condiciones (se guarda al registrarse)
+const TERMS_VERSION = '2026-10';
+
 // Ayuda / horarios
 const TZ = 'America/Argentina/Buenos_Aires';
 const DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -590,6 +657,10 @@ const state = {
   adminCliente: null,   // cliente abierto (fila de profiles)
   adminCarpetas: null,  // carpetas del cliente abierto (null = cargando)
   adminCarpetasErr: false,
+  adminSub: null,       // null | 'newClient' | 'newFolder' | 'dato'
+  adminDato: null,      // { fid, did } del dato que se está editando ('new' = nuevo)
+  adminFid: null,       // carpeta a la que se está subiendo una boleta
+  viewAdmin: false,     // el visor de boletas está abierto desde el panel admin
   pendingDocs: false,   // abrir "Mis documentos" apenas ingrese
   local: null,     // datos de ayuda/contacto
   uploading: false,
@@ -811,6 +882,9 @@ document.addEventListener('click', e => {
   const c = e.target.closest('[data-tramite]');
   if (c) showTramite(c.dataset.tramite);
 });
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-terms]')) openModal('m-terms');
+});
 $('#tramiteSearch').addEventListener('input', renderTramitesModal);
 
 /* ---------------- Auth ---------------- */
@@ -819,6 +893,7 @@ function setAuthMode(mode){
   $$('#m-auth .tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === mode));
   $('#fNombre').classList.toggle('hidden', mode !== 'register');
   $('#authSubmit').textContent = mode === 'register' ? 'Crear cuenta' : 'Ingresar';
+  $('#fTerms').classList.toggle('hidden', mode !== 'register');
   $('#authPass').autocomplete = mode === 'register' ? 'new-password' : 'current-password';
   $('#authHint').textContent = mode === 'register'
     ? 'Podés usar tu mismo DNI como contraseña. Después la podés cambiar.'
@@ -840,12 +915,13 @@ $('#authForm').addEventListener('submit', async e => {
   if (!validDni(dni)) { err.textContent = 'Ingresá un DNI válido (7 u 8 números).'; return; }
   if (pass.length < 6) { err.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
   if (state.authMode === 'register' && !nombre) { err.textContent = 'Ingresá tu nombre.'; return; }
+  if (state.authMode === 'register' && !$('#authTerms').checked) { err.textContent = 'Para crear tu cuenta tenés que aceptar los términos y condiciones.'; return; }
 
   const btn = $('#authSubmit'); btn.disabled = true;
   try {
     let res;
     if (state.authMode === 'register'){
-      res = await sb.auth.signUp({ email: dniEmail(dni), password: pass, options: { data: { dni, nombre } } });
+      res = await sb.auth.signUp({ email: dniEmail(dni), password: pass, options: { data: { dni, nombre, terms_accepted_at: new Date().toISOString(), terms_version: TERMS_VERSION, terms_via: 'app' } } });
       if (res.error) throw res.error;
       if (!res.data.session){
         // Si el proyecto exige confirmación de email, intentamos entrar igual.
@@ -1071,7 +1147,7 @@ async function viewBoleta(id){
   const { data, error } = await sb.storage.from(BOLETAS_BUCKET).createSignedUrl(b.path, 300);
   if (error || !data?.signedUrl) return toast('No se pudo abrir la boleta.');
   const url = data.signedUrl, isPdf = b.mime === 'application/pdf';
-  state.viewBoleta = id;
+  state.viewBoleta = id; state.viewAdmin = false;
   $('#viewTitle').textContent = b.nombre;
   $('#viewBody').innerHTML =
     (isPdf ? `<div class="pdfbox">Documento PDF</div>` : `<img src="${esc(url)}" alt="${esc(b.nombre)}">`) +
@@ -1101,8 +1177,8 @@ async function deleteBoleta(id){
 }
 
 $('#viewBody').addEventListener('click', e => {
-  if (e.target.closest('[data-vren]')) renameBoleta(state.viewBoleta);
-  if (e.target.closest('[data-vdel]')) deleteBoleta(state.viewBoleta);
+  if (e.target.closest('[data-vren]')) return state.viewAdmin ? renameBoletaAdmin(state.viewBoleta) : renameBoleta(state.viewBoleta);
+  if (e.target.closest('[data-vdel]')) return state.viewAdmin ? deleteBoletaAdmin(state.viewBoleta) : deleteBoleta(state.viewBoleta);
 });
 
 /* ----- Eventos del modal de datos ----- */
@@ -1217,7 +1293,7 @@ $('#docsBody').addEventListener('submit', async e => {
 /* ---------------- Panel admin ---------------- */
 async function openAdmin(){
   if (!state.profile?.is_admin) return;
-  state.adminEdit = null; state.adminTab = 'tramites'; state.adminCliente = null;
+  state.adminEdit = null; state.adminTab = 'tramites'; state.adminCliente = null; state.adminSub = null; state.adminDato = null;
   await renderAdmin(); openModal('m-admin');
 }
 
@@ -1252,14 +1328,19 @@ async function renderAdmin(){
     </div>`;
 }
 
-/* ----- Admin · Clientes: buscar por DNI/nombre y ver sus carpetas ----- */
+/* ----- Admin · Clientes: buscar, crear y cargar/editar sus documentos ----- */
 const CLIENTES_LIMIT = 50;
 let cliTimer, cliSeq = 0;
+
+const adFolder = id => (state.adminCarpetas || []).find(x => x.id === id);
+const adBoleta = id => (state.adminCarpetas || []).flatMap(f => f.boletas || []).find(x => x.id === id);
 
 function renderAdminClientes(body){
   $('#adminTitle').textContent = 'Administrar';
   if (state.adminCliente) return renderAdminCliente(body);
+  if (state.adminSub === 'newClient') return renderAdminNewClient(body);
   body.innerHTML = adminTabsHTML('clientes') + `
+    <button class="btn primary block" data-anewclient style="margin-bottom:14px">${ICON.plus} Nuevo cliente</button>
     <input class="input" id="cliSearch" type="search" inputmode="search" autocomplete="off"
       placeholder="Buscar por DNI o nombre…" value="${esc(state.adminQ)}" style="margin-bottom:14px">
     <div id="cliList"><div class="spinner"></div></div>`;
@@ -1292,9 +1373,64 @@ async function loadClientes(){
     ${state.adminClientes.length >= CLIENTES_LIMIT ? '<p class="hint">Se muestran los primeros ' + CLIENTES_LIMIT + '. Escribí un DNI o nombre para afinar la búsqueda.</p>' : ''}`;
 }
 
+/* ----- Alta de cliente desde el panel ----- */
+function renderAdminNewClient(body){
+  $('#adminTitle').textContent = 'Nuevo cliente';
+  body.innerHTML = `
+    <button class="link back" data-adsubback>${ICON.back} Clientes</button>
+    <form id="adNewClientForm">
+      <label class="field"><span>DNI del cliente</span>
+        <input class="input" id="adcDni" inputmode="numeric" maxlength="8" placeholder="Sin puntos" autocomplete="off" required>
+      </label>
+      <label class="field"><span>Nombre y apellido</span>
+        <input class="input" id="adcNombre" maxlength="80" placeholder="Ej: María Gómez" autocomplete="off" required>
+      </label>
+      <p class="hint" style="margin:-4px 0 16px">La contraseña inicial es el mismo DNI. Recomendale al cliente que después la cambie desde su cuenta.</p>
+      <label class="check" style="align-items:flex-start">
+        <input type="checkbox" id="adcTerms" style="margin-top:3px">
+        <span>El cliente aceptó los <button type="button" class="link" data-terms style="display:inline;font-size:inherit">Términos y Condiciones</button> (se los mostré o los leyó).</span>
+      </label>
+      <p class="err" id="adcErr"></p>
+      <button class="btn primary block" type="submit" id="adcSave">Crear cliente</button>
+    </form>`;
+  setTimeout(() => $('#adcDni')?.focus(), 60);
+}
+
+async function saveNewClient(){
+  const err = $('#adcErr'), btn = $('#adcSave'); err.textContent = '';
+  const dni = cleanDni($('#adcDni').value), nombre = $('#adcNombre').value.trim();
+  if (!validDni(dni)){ err.textContent = 'Ingresá un DNI válido (7 u 8 números).'; return; }
+  if (!nombre){ err.textContent = 'Ingresá el nombre y apellido.'; return; }
+  if (!$('#adcTerms').checked){ err.textContent = 'El cliente tiene que aceptar los términos y condiciones.'; return; }
+  btn.disabled = true; btn.textContent = 'Creando…';
+  try {
+    // Cliente aparte que NO guarda sesión: así tu sesión de admin no se pisa al crear la cuenta.
+    const alt = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false, storageKey: 'zxs-alta-' + Date.now() },
+    });
+    const { data, error } = await alt.auth.signUp({
+      email: dniEmail(dni), password: dni,
+      options: { data: { dni, nombre, terms_accepted_at: new Date().toISOString(), terms_version: TERMS_VERSION, terms_via: 'local' } },
+    });
+    if (error) throw error;
+    const uid = data.user?.id; if (!uid) throw new Error('No se pudo crear el usuario.');
+    let { data: prof } = await sb.from('profiles').select('id,dni,nombre').eq('id', uid).maybeSingle();
+    if (!prof) prof = { id: uid, dni, nombre };
+    state.adminClientes = [prof]; state.adminSub = null;
+    toast('Cliente creado. Su contraseña inicial es el DNI.');
+    openAdminCliente(uid);
+  } catch (ex){
+    const dup = ex?.code === 'user_already_exists' || /already/i.test(ex?.message || '');
+    err.textContent = dup ? 'Ya existe un cliente con ese DNI. Buscalo en la lista de clientes.' : authMsg(ex);
+    btn.disabled = false; btn.textContent = 'Crear cliente';
+  }
+}
+
+/* ----- Ficha del cliente: ver y cargar/editar todo ----- */
 async function openAdminCliente(id){
   const p = state.adminClientes.find(x => x.id === id); if (!p) return;
   state.adminCliente = p; state.adminCarpetas = null; state.adminCarpetasErr = false;
+  state.adminSub = null; state.adminDato = null;
   renderAdmin(); // muestra el cargando
   const { data, error } = await sb.from('carpetas').select('*, carpeta_datos(*), boletas(*)')
     .eq(CARPETA_OWNER_COL, id).order('empresa');
@@ -1305,6 +1441,8 @@ async function openAdminCliente(id){
 }
 
 function renderAdminCliente(body){
+  if (state.adminSub === 'newFolder') return renderAdminNewFolder(body);
+  if (state.adminSub === 'dato') return renderAdminDatoForm(body);
   const p = state.adminCliente, cs = state.adminCarpetas;
   $('#adminTitle').textContent = p.nombre || 'Cliente';
   const head = `
@@ -1316,26 +1454,41 @@ function renderAdminCliente(body){
     body.innerHTML = head + '<div class="empty">No se pudieron cargar los documentos de este cliente.<br>Revisá que estén creadas las políticas de administrador en Supabase.</div>';
     return;
   }
-  if (!cs.length){ body.innerHTML = head + '<div class="empty">Este cliente todavía no cargó nada.</div>'; return; }
+  const newBtn = `<button class="btn primary block" data-adnewfolder style="margin-bottom:22px">${ICON.plus} Nueva carpeta</button>`;
+  if (!cs.length){
+    body.innerHTML = head + '<div class="empty" style="margin-bottom:16px">Este cliente todavía no cargó nada.<br>Podés armarle la primera carpeta ahora.</div>' + newBtn;
+    return;
+  }
 
-  body.innerHTML = head + `<p class="hint" style="margin:-6px 0 16px">Tocá un dato para copiarlo o una boleta para verla.</p>` + cs.map(f => {
+  body.innerHTML = head + newBtn + cs.map(f => {
     const datos = [...(f.carpeta_datos || [])].sort((a, b) => a.created_at.localeCompare(b.created_at));
     const bols = [...(f.boletas || [])].sort((a, b) => b.created_at.localeCompare(a.created_at));
     return `
     <div class="cfolder">
-      <h3>${ICON.folder}${esc(f.empresa)}</h3>
+      <h3>${ICON.folder}<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(f.empresa)}</span>
+        <button class="iconbtn" data-afren="${f.id}" aria-label="Renombrar carpeta">${ICON.edit}</button>
+        <button class="iconbtn" data-afdel="${f.id}" aria-label="Eliminar carpeta">${ICON.trash}</button>
+      </h3>
+      <div class="sub" style="margin-top:0">Datos${datos.length ? ` (${datos.length})` : ''}</div>
       ${datos.length ? `
-        <div class="dlist">
+        <div class="dlist" style="margin-bottom:10px">
           ${datos.map(d => `
             <div class="dato">
               <button class="dm" data-acopy="${d.id}" aria-label="Copiar ${esc(d.etiqueta)}">
                 <small>${esc(d.etiqueta)}</small>
                 <b class="${d.valor ? '' : 'none'}">${d.valor ? esc(d.valor) : 'Sin cargar'}</b>
               </button>
+              <button class="iconbtn" data-adedit="${d.id}" data-fid="${f.id}" aria-label="Editar">${ICON.edit}</button>
             </div>`).join('')}
         </div>` : ''}
+      <button class="btn sm" data-adnew="${f.id}">+ Agregar dato</button>
+
+      <div class="sub">Boletas${bols.length ? ` (${bols.length})` : ''}</div>
+      <div class="upl" style="margin-bottom:10px">
+        <button class="btn sm primary" data-abolpick="cam" data-fid="${f.id}">Sacar foto</button>
+        <button class="btn sm" data-abolpick="file" data-fid="${f.id}">Subir archivo</button>
+      </div>
       ${bols.length ? `
-        <div class="sub">Boletas (${bols.length})</div>
         <div class="bol-list">
           ${bols.map(b => `
             <button class="bol" data-abol="${b.id}" aria-label="Ver ${esc(b.nombre)}">
@@ -1344,22 +1497,180 @@ function renderAdminCliente(body){
               <span class="go">${ICON.chev}</span>
             </button>`).join('')}
         </div>` : ''}
-      ${!datos.length && !bols.length ? '<div class="empty" style="padding:18px">Carpeta vacía.</div>' : ''}
     </div>`;
-  }).join('');
+  }).join('') + `
+    <input type="file" id="abCam" accept="image/*" capture="environment" class="hidden">
+    <input type="file" id="abFile" accept="image/*,application/pdf" class="hidden">`;
+}
+
+/* ----- Carpetas del cliente (admin) ----- */
+function renderAdminNewFolder(body){
+  $('#adminTitle').textContent = 'Nueva carpeta';
+  body.innerHTML = `
+    <button class="link back" data-adsubback>${ICON.back} ${esc(state.adminCliente.nombre || 'Cliente')}</button>
+    <form id="adNewFolderForm">
+      <label class="field"><span>Nombre de la carpeta</span>
+        <input class="input" id="adfName" placeholder="Ej: Luz (EDEN)" required maxlength="60" autocomplete="off">
+      </label>
+      <div class="chips">
+        ${IDEAS_CARPETA.map(x => `<button type="button" class="chip" data-fill="#adfName" data-val="${esc(x)}">${esc(x)}</button>`).join('')}
+      </div>
+      <p class="err" id="adfErr"></p>
+      <button class="btn primary block" type="submit" id="adfSave">Crear carpeta</button>
+    </form>`;
+  setTimeout(() => $('#adfName')?.focus(), 60);
+}
+
+async function saveNewFolderAdmin(){
+  const p = state.adminCliente, name = $('#adfName').value.trim(); if (!p || !name) return;
+  const btn = $('#adfSave'); btn.disabled = true;
+  const { data, error } = await sb.from('carpetas').insert({ empresa: name, [CARPETA_OWNER_COL]: p.id }).select().single();
+  if (error){
+    $('#adfErr').textContent = 'No se pudo crear la carpeta. Revisá las políticas de administrador en Supabase.';
+    btn.disabled = false; return;
+  }
+  data.carpeta_datos = []; data.boletas = [];
+  state.adminCarpetas.push(data);
+  state.adminCarpetas.sort((a, b) => a.empresa.localeCompare(b.empresa));
+  state.adminSub = null; renderAdmin(); toast('Carpeta creada.');
+}
+
+async function renombrarCarpetaAdmin(fid){
+  const f = adFolder(fid); if (!f) return;
+  const n = prompt('Nuevo nombre de la carpeta', f.empresa); if (n === null) return;
+  const name = n.trim().slice(0, 60); if (!name || name === f.empresa) return;
+  const { data, error } = await sb.from('carpetas').update({ empresa: name }).eq('id', fid).select();
+  if (error || !data?.length) return toast('No se pudo renombrar.');
+  f.empresa = name; state.adminCarpetas.sort((a, b) => a.empresa.localeCompare(b.empresa));
+  renderAdmin(); toast('Carpeta renombrada.');
+}
+
+async function borrarCarpetaAdmin(fid){
+  const f = adFolder(fid); if (!f) return;
+  if (!confirm(`¿Eliminar la carpeta "${f.empresa}", sus datos y sus boletas?`)) return;
+  const paths = (f.boletas || []).map(b => b.path);
+  const { data, error } = await sb.from('carpetas').delete().eq('id', fid).select();
+  if (error || !data?.length) return toast('No se pudo eliminar.');
+  if (paths.length) sb.storage.from(BOLETAS_BUCKET).remove(paths);
+  state.adminCarpetas = state.adminCarpetas.filter(x => x.id !== fid);
+  renderAdmin(); toast('Carpeta eliminada.');
+}
+
+/* ----- Datos del cliente (admin) ----- */
+function renderAdminDatoForm(body){
+  const { fid, did } = state.adminDato || {};
+  const f = adFolder(fid);
+  if (!f){ state.adminSub = null; return renderAdminCliente(body); }
+  const d = did && did !== 'new' ? (f.carpeta_datos || []).find(x => x.id === did) : null;
+  $('#adminTitle').textContent = d ? 'Editar dato' : 'Nuevo dato';
+  body.innerHTML = `
+    <button class="link back" data-adsubback>${ICON.back} ${esc(f.empresa)}</button>
+    <form id="adDatoForm">
+      <label class="field"><span>¿Qué dato es?</span>
+        <input class="input" id="adEtiqueta" value="${esc(d?.etiqueta || '')}" placeholder="Ej: Número de cliente" maxlength="60" required autocomplete="off">
+      </label>
+      ${d ? '' : `<div class="chips">
+        ${IDEAS_DATO.map(x => `<button type="button" class="chip" data-fill="#adEtiqueta" data-next="#adValor" data-val="${esc(x)}">${esc(x)}</button>`).join('')}
+      </div>`}
+      <label class="field"><span>Valor</span>
+        <input class="input" id="adValor" value="${esc(d?.valor || '')}" placeholder="Ej: 123456" maxlength="200" autocomplete="off">
+      </label>
+      <p class="err" id="adErr"></p>
+      <button class="btn primary block" type="submit" id="adDatoSave">Guardar</button>
+      ${d ? `<div class="foot-links"><button type="button" class="del" data-adatodel>Eliminar este dato</button></div>` : ''}
+    </form>`;
+  setTimeout(() => (d ? $('#adValor') : $('#adEtiqueta'))?.focus(), 60);
+}
+
+async function saveDatoAdmin(){
+  const { fid, did } = state.adminDato || {};
+  const f = adFolder(fid); if (!f) return;
+  const etiqueta = $('#adEtiqueta').value.trim(), valor = $('#adValor').value.trim();
+  if (!etiqueta) return;
+  const btn = $('#adDatoSave'); btn.disabled = true;
+  const isNew = did === 'new';
+  const q = isNew
+    ? sb.from('carpeta_datos').insert({ carpeta_id: f.id, etiqueta, valor }).select().single()
+    : sb.from('carpeta_datos').update({ etiqueta, valor }).eq('id', did).select().single();
+  const { data, error } = await q;
+  if (error){
+    $('#adErr').textContent = 'No se pudo guardar. Revisá las políticas de administrador en Supabase.';
+    btn.disabled = false; return;
+  }
+  if (isNew) (f.carpeta_datos = f.carpeta_datos || []).push(data);
+  else { const i = f.carpeta_datos.findIndex(x => x.id === data.id); if (i > -1) f.carpeta_datos[i] = data; }
+  state.adminSub = null; state.adminDato = null; renderAdmin(); toast('Guardado.');
+}
+
+async function borrarDatoAdmin(){
+  const { fid, did } = state.adminDato || {};
+  const f = adFolder(fid); if (!f || !did || did === 'new') return;
+  if (!confirm('¿Eliminar este dato?')) return;
+  const { data, error } = await sb.from('carpeta_datos').delete().eq('id', did).select();
+  if (error || !data?.length) return toast('No se pudo eliminar.');
+  f.carpeta_datos = f.carpeta_datos.filter(x => x.id !== did);
+  state.adminSub = null; state.adminDato = null; renderAdmin(); toast('Dato eliminado.');
+}
+
+/* ----- Boletas del cliente (admin) ----- */
+async function uploadBoletaAdmin(file, fid){
+  if (!file || state.uploading) return;
+  const p = state.adminCliente, f = adFolder(fid); if (!p || !f) return;
+  let blob = file, mime, ext;
+  if (file.type === 'application/pdf'){ mime = 'application/pdf'; ext = 'pdf'; }
+  else if (file.type.startsWith('image/')){ blob = await shrinkImage(file, 1600, 'image/jpeg'); mime = 'image/jpeg'; ext = 'jpg'; }
+  else return toast('Subí una foto o un PDF.');
+  if (blob.size > BOLETA_MAX_BYTES) return toast('El archivo pesa más de 5 MB.');
+
+  state.uploading = true; toast('Subiendo…');
+  try {
+    // Misma ruta que usa el cliente (idCliente/idCarpeta/archivo), así él la ve en su cuenta
+    const path = `${p.id}/${f.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const up = await sb.storage.from(BOLETAS_BUCKET).upload(path, blob, { contentType: mime, upsert: false });
+    if (up.error) throw up.error;
+    const nombre = 'Boleta ' + fechaAR(new Date().toISOString());
+    const { data, error } = await sb.from('boletas').insert({ carpeta_id: f.id, nombre, path, mime }).select().single();
+    if (error){ await sb.storage.from(BOLETAS_BUCKET).remove([path]); throw error; }
+    (f.boletas = f.boletas || []).push(data);
+    renderAdmin(); toast('Boleta guardada.');
+  } catch (ex){
+    console.log('boleta admin error →', ex);
+    toast('No se pudo subir la boleta.');
+  } finally { state.uploading = false; }
 }
 
 async function viewBoletaAdmin(id){
-  const b = (state.adminCarpetas || []).flatMap(f => f.boletas || []).find(x => x.id === id); if (!b) return;
+  const b = adBoleta(id); if (!b) return;
   const { data, error } = await sb.storage.from(BOLETAS_BUCKET).createSignedUrl(b.path, 300);
   if (error || !data?.signedUrl) return toast('No se pudo abrir la boleta.');
   const url = data.signedUrl, isPdf = b.mime === 'application/pdf';
-  state.viewBoleta = null; // solo lectura: sin renombrar ni eliminar
+  state.viewBoleta = id; state.viewAdmin = true;
   $('#viewTitle').textContent = b.nombre;
   $('#viewBody').innerHTML =
     (isPdf ? `<div class="pdfbox">Documento PDF</div>` : `<img src="${esc(url)}" alt="${esc(b.nombre)}">`) +
-    `<div class="row-actions" style="margin-top:14px"><a class="btn primary" href="${esc(url)}" target="_blank" rel="noopener">${isPdf ? 'Abrir PDF' : 'Abrir en pestaña nueva'}</a></div>`;
+    `<div class="row-actions" style="margin-top:14px"><a class="btn primary" href="${esc(url)}" target="_blank" rel="noopener">${isPdf ? 'Abrir PDF' : 'Abrir en pestaña nueva'}</a></div>
+     <div class="foot-links" style="margin-top:18px"><button data-vren>Renombrar</button><button class="del" data-vdel>Eliminar</button></div>`;
   openModal('m-viewer');
+}
+
+async function renameBoletaAdmin(id){
+  const b = adBoleta(id); if (!b) return;
+  const n = prompt('Nombre de la boleta', b.nombre); if (n === null) return;
+  const nombre = n.trim().slice(0, 60); if (!nombre || nombre === b.nombre) return;
+  const { data, error } = await sb.from('boletas').update({ nombre }).eq('id', id).select();
+  if (error || !data?.length) return toast('No se pudo renombrar.');
+  b.nombre = nombre; $('#viewTitle').textContent = nombre; renderAdmin(); toast('Nombre guardado.');
+}
+
+async function deleteBoletaAdmin(id){
+  const f = (state.adminCarpetas || []).find(x => (x.boletas || []).some(b => b.id === id)); if (!f) return;
+  const b = f.boletas.find(x => x.id === id);
+  if (!confirm('¿Eliminar esta boleta?')) return;
+  const { data, error } = await sb.from('boletas').delete().eq('id', id).select();
+  if (error || !data?.length) return toast('No se pudo eliminar.');
+  sb.storage.from(BOLETAS_BUCKET).remove([b.path]);
+  f.boletas = f.boletas.filter(x => x.id !== id);
+  closeModal('m-viewer'); renderAdmin(); toast('Boleta eliminada.');
 }
 
 function renderAdminLocal(body){
@@ -1478,12 +1789,12 @@ function shrinkImage(file, max = 900, type = 'image/webp'){
 $('#adminBody').addEventListener('click', async e => {
   const body = $('#adminBody');
   const tab = e.target.closest('[data-atab]');
-  if (tab){ state.adminTab = tab.dataset.atab; state.adminEdit = null; state.adminCliente = null; renderAdmin(); return; }
+  if (tab){ state.adminTab = tab.dataset.atab; state.adminEdit = null; state.adminCliente = null; state.adminSub = null; state.adminDato = null; renderAdmin(); return; }
 
   // Clientes
   const cl = e.target.closest('[data-acliente]');
   if (cl){ openAdminCliente(cl.dataset.acliente); return; }
-  if (e.target.closest('[data-aclback]')){ state.adminCliente = null; state.adminCarpetas = null; renderAdmin(); return; }
+  if (e.target.closest('[data-aclback]')){ state.adminCliente = null; state.adminCarpetas = null; state.adminSub = null; state.adminDato = null; renderAdmin(); return; }
   const ab = e.target.closest('[data-abol]');
   if (ab){ viewBoletaAdmin(ab.dataset.abol); return; }
   const ac = e.target.closest('[data-acopy]');
@@ -1493,6 +1804,24 @@ $('#adminBody').addEventListener('click', async e => {
     try { await navigator.clipboard.writeText(d.valor); toast('Copiado: ' + d.etiqueta); } catch { toast('No se pudo copiar.'); }
     return;
   }
+
+  // Carga asistida
+  if (e.target.closest('[data-anewclient]')){ state.adminSub = 'newClient'; renderAdmin(); return; }
+  if (e.target.closest('[data-adnewfolder]')){ state.adminSub = 'newFolder'; renderAdmin(); return; }
+  if (e.target.closest('[data-adsubback]')){ state.adminSub = null; state.adminDato = null; renderAdmin(); return; }
+  const an = e.target.closest('[data-adnew]');
+  if (an){ state.adminSub = 'dato'; state.adminDato = { fid: an.dataset.adnew, did: 'new' }; renderAdmin(); return; }
+  const ae = e.target.closest('[data-adedit]');
+  if (ae){ state.adminSub = 'dato'; state.adminDato = { fid: ae.dataset.fid, did: ae.dataset.adedit }; renderAdmin(); return; }
+  if (e.target.closest('[data-adatodel]')){ borrarDatoAdmin(); return; }
+  const fl = e.target.closest('[data-fill]');
+  if (fl){ $(fl.dataset.fill).value = fl.dataset.val; $(fl.dataset.next || fl.dataset.fill).focus(); return; }
+  const fr = e.target.closest('[data-afren]');
+  if (fr){ renombrarCarpetaAdmin(fr.dataset.afren); return; }
+  const fd = e.target.closest('[data-afdel]');
+  if (fd){ borrarCarpetaAdmin(fd.dataset.afdel); return; }
+  const bp = e.target.closest('[data-abolpick]');
+  if (bp){ state.adminFid = bp.dataset.fid; $(bp.dataset.abolpick === 'cam' ? '#abCam' : '#abFile').click(); return; }
 
   // Trámites
   const ed = e.target.closest('[data-aedit]');
@@ -1509,12 +1838,17 @@ $('#adminBody').addEventListener('click', async e => {
 
 // Buscador de clientes (con espera para no consultar en cada letra)
 $('#adminBody').addEventListener('input', e => {
+  if (e.target.id === 'adcDni'){ e.target.value = cleanDni(e.target.value); return; }
   if (e.target.id !== 'cliSearch') return;
   state.adminQ = e.target.value;
   clearTimeout(cliTimer); cliTimer = setTimeout(loadClientes, 250);
 });
 
 $('#adminBody').addEventListener('change', e => {
+  if (e.target.id === 'abCam' || e.target.id === 'abFile'){
+    const file = e.target.files[0]; e.target.value = '';
+    uploadBoletaAdmin(file, state.adminFid); return;
+  }
   if (e.target.id !== 'tImg') return;
   const f = e.target.files[0]; if (!f) return;
   $('#adminBody')._img = f;
@@ -1524,6 +1858,9 @@ $('#adminBody').addEventListener('change', e => {
 $('#adminBody').addEventListener('submit', async e => {
   e.preventDefault();
   if (e.target.id === 'localForm') return saveLocal(e.target);
+  if (e.target.id === 'adNewClientForm') return saveNewClient();
+  if (e.target.id === 'adNewFolderForm') return saveNewFolderAdmin();
+  if (e.target.id === 'adDatoForm') return saveDatoAdmin();
   if (e.target.id !== 'tramiteForm') return;
   const body = $('#adminBody'), btn = $('#tSave'), err = $('#tErr');
   err.textContent = ''; btn.disabled = true; btn.textContent = 'Guardando…';
