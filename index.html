@@ -72,6 +72,8 @@ a.btn{text-decoration:none}
 .btn.primary:hover{filter:brightness(1.08);border-color:var(--accent)}
 .btn.danger{color:var(--danger);border-color:#4a2824}
 .btn.sm{padding:8px 15px;font-size:14px}
+.btn.hl{border-color:var(--accent);color:var(--accent)}
+.btn.hl:hover{background:var(--accent-soft);border-color:var(--accent)}
 .btn.block{width:100%}
 .btn[disabled]{opacity:.55;pointer-events:none}
 .link{color:var(--accent);font-weight:700;font-size:14px;padding:4px 0}
@@ -184,6 +186,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
   .hero{padding:48px 0 40px}
 }
 
+/* Header en celulares angostos: más lugar para los botones */
+@media (max-width:420px){
+  .top .wrap{padding:0 12px;gap:8px}
+  nav.actions{gap:6px}
+  nav.actions .btn.sm{padding:8px 12px;font-size:13px}
+  .brand-name{display:none}
+}
+
 /* ---------- Formularios ---------- */
 .field{display:block;margin-bottom:14px}
 .field>span{display:block;font-size:13px;font-weight:700;margin-bottom:6px;color:#e5e5e5}
@@ -199,6 +209,8 @@ textarea.input{resize:vertical;min-height:70px}
 .tabs{display:grid;grid-template-columns:1fr 1fr;background:#000;border:1px solid #333;border-radius:999px;padding:4px;margin-bottom:18px}
 .tabs button{padding:10px;border-radius:999px;font-weight:800;font-size:14px;color:var(--muted)}
 .tabs button.on{background:var(--accent);color:#000}
+.tabs.t3{grid-template-columns:repeat(3,1fr)}
+.tabs.t3 button{padding:10px 6px}
 .check{display:flex;align-items:center;gap:10px;font-size:15px;margin-bottom:14px;cursor:pointer}
 .check input{width:18px;height:18px;accent-color:var(--accent)}
 
@@ -265,6 +277,10 @@ textarea.input{resize:vertical;min-height:70px}
 .hday .hr{display:flex;gap:10px;flex-wrap:wrap}
 .hg{display:flex;align-items:center;gap:8px;flex:1 1 200px;color:var(--muted);font-size:13px}
 .hg .input{padding:10px 12px;min-width:0}
+.cfolder{margin-bottom:24px}
+.cfolder h3{font-size:17px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.cfolder h3 svg{width:18px;height:18px;color:var(--accent);flex:none}
+.cfolder .sub{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:12px 0 8px}
 
 /* ---------- Menú de cuenta ---------- */
 .menu{position:relative}
@@ -311,10 +327,11 @@ textarea.input{resize:vertical;min-height:70px}
           <path d="M7 7h10L7 17h10" fill="none" stroke="#ffd100" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <div>Zero X Siento<small>Pago Fácil</small></div>
+      <div class="brand-name">Zero X Siento<small>Pago Fácil</small></div>
     </div>
     <nav class="actions">
       <button class="btn sm" id="btnTramitesTop">Trámites</button>
+      <button class="btn sm hl" id="btnBoletasTop">Tus boletas</button>
       <button class="btn sm primary" id="btnLoginTop">Ingresar</button>
       <div class="menu hidden" id="userMenu">
         <button class="avatar" id="avatarBtn" aria-label="Mi cuenta">?</button>
@@ -539,6 +556,10 @@ const IDEAS_DATO = ['Número de cliente', 'NIS', 'Titular', 'Partida', 'Patente'
 const BOLETAS_BUCKET = 'boletas';
 const BOLETA_MAX_BYTES = 5 * 1024 * 1024;
 
+// Columna de la tabla "carpetas" que guarda el dueño (uuid de auth.users).
+// Si en tu base se llama distinto, cambiala acá.
+const CARPETA_OWNER_COL = 'user_id';
+
 // Ayuda / horarios
 const TZ = 'America/Argentina/Buenos_Aires';
 const DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -563,7 +584,13 @@ const state = {
   viewBoleta: null,
   authMode: 'login',
   adminEdit: null, // null = lista, 'new' o id
-  adminTab: 'tramites', // 'tramites' | 'local'
+  adminTab: 'tramites', // 'tramites' | 'clientes' | 'local'
+  adminQ: '',           // búsqueda de clientes
+  adminClientes: [],    // resultados de la búsqueda
+  adminCliente: null,   // cliente abierto (fila de profiles)
+  adminCarpetas: null,  // carpetas del cliente abierto (null = cargando)
+  adminCarpetasErr: false,
+  pendingDocs: false,   // abrir "Mis documentos" apenas ingrese
   local: null,     // datos de ayuda/contacto
   uploading: false,
 };
@@ -648,6 +675,8 @@ async function onSession(session){
   await loadProfile();
   renderSession();
   if (state.user) await loadCarpetas(); else { state.carpetas = []; state.openCarpeta = null; }
+  // Si tocó "Tus boletas" sin estar ingresado, lo llevamos directo apenas entra
+  if (state.user && state.pendingDocs){ state.pendingDocs = false; openDocs(); }
 }
 
 /* ---------------- Ayuda / contacto ---------------- */
@@ -851,7 +880,10 @@ async function logout(){
 
 /* ---------------- Carpetas del cliente ---------------- */
 async function loadCarpetas(){
-  const { data, error } = await sb.from('carpetas').select('*, carpeta_datos(*), boletas(*)').order('empresa');
+  // Siempre filtramos por el usuario actual: un admin también puede LEER las de otros
+  // (panel de clientes), pero acá solo tiene que ver las suyas.
+  const { data, error } = await sb.from('carpetas').select('*, carpeta_datos(*), boletas(*)')
+    .eq(CARPETA_OWNER_COL, state.user.id).order('empresa');
   state.carpetas = error ? [] : (data || []);
 }
 
@@ -860,7 +892,7 @@ const fechaAR = iso => new Date(iso).toLocaleDateString('es-AR', { timeZone: TZ 
 const curFolder = () => state.carpetas.find(x => x.id === state.openCarpeta);
 
 function openDocs(){
-  if (!state.user) { openAuth('login'); return; }
+  if (!state.user) { state.pendingDocs = true; openAuth('login'); return; }
   state.openCarpeta = null; state.editDato = null; state.folderTab = 'datos';
   state.docsView = 'list'; renderDocs(); openModal('m-docs');
 }
@@ -1185,19 +1217,22 @@ $('#docsBody').addEventListener('submit', async e => {
 /* ---------------- Panel admin ---------------- */
 async function openAdmin(){
   if (!state.profile?.is_admin) return;
-  state.adminEdit = null; state.adminTab = 'tramites'; await renderAdmin(); openModal('m-admin');
+  state.adminEdit = null; state.adminTab = 'tramites'; state.adminCliente = null;
+  await renderAdmin(); openModal('m-admin');
 }
 
 const adminTabsHTML = active => `
-  <div class="tabs">
+  <div class="tabs t3">
     <button data-atab="tramites" class="${active === 'tramites' ? 'on' : ''}">Trámites</button>
-    <button data-atab="local" class="${active === 'local' ? 'on' : ''}">Local y ayuda</button>
+    <button data-atab="clientes" class="${active === 'clientes' ? 'on' : ''}">Clientes</button>
+    <button data-atab="local" class="${active === 'local' ? 'on' : ''}">Local</button>
   </div>`;
 
 async function renderAdmin(){
   const body = $('#adminBody');
   if (state.adminEdit) return renderAdminForm(body);
   if (state.adminTab === 'local') return renderAdminLocal(body);
+  if (state.adminTab === 'clientes') return renderAdminClientes(body);
 
   $('#adminTitle').textContent = 'Administrar';
   body.innerHTML = '<div class="spinner"></div>';
@@ -1215,6 +1250,116 @@ async function renderAdmin(){
           <button class="iconbtn" data-adel="${t.id}" aria-label="Eliminar">${ICON.trash}</button>
         </div>`).join('') : '<div class="empty">Todavía no hay trámites. Agregá el primero.</div>'}
     </div>`;
+}
+
+/* ----- Admin · Clientes: buscar por DNI/nombre y ver sus carpetas ----- */
+const CLIENTES_LIMIT = 50;
+let cliTimer, cliSeq = 0;
+
+function renderAdminClientes(body){
+  $('#adminTitle').textContent = 'Administrar';
+  if (state.adminCliente) return renderAdminCliente(body);
+  body.innerHTML = adminTabsHTML('clientes') + `
+    <input class="input" id="cliSearch" type="search" inputmode="search" autocomplete="off"
+      placeholder="Buscar por DNI o nombre…" value="${esc(state.adminQ)}" style="margin-bottom:14px">
+    <div id="cliList"><div class="spinner"></div></div>`;
+  loadClientes();
+}
+
+async function loadClientes(){
+  const seq = ++cliSeq;
+  const q = state.adminQ.trim().replace(/[%,()*\\]/g, ' ').trim();
+  let req = sb.from('profiles').select('id,dni,nombre').order('nombre').limit(CLIENTES_LIMIT);
+  if (q){
+    const col = /^\d+$/.test(q) ? 'dni' : 'nombre';
+    req = req.ilike(col, `%${q}%`);
+  }
+  const { data, error } = await req;
+  if (seq !== cliSeq) return; // llegó una búsqueda más nueva
+  const box = $('#cliList'); if (!box) return;
+  if (error){ box.innerHTML = '<div class="empty">No se pudieron cargar los clientes.</div>'; return; }
+  state.adminClientes = data || [];
+  if (!state.adminClientes.length){ box.innerHTML = '<div class="empty">No encontramos clientes con esa búsqueda.</div>'; return; }
+  box.innerHTML = `
+    <div class="flist" style="margin-bottom:10px">
+      ${state.adminClientes.map(p => `
+        <button class="fitem" data-acliente="${p.id}">
+          <div class="ic" style="font-weight:900;font-size:18px">${esc((p.nombre || '?')[0].toUpperCase())}</div>
+          <div class="tx"><b>${esc(p.nombre || 'Sin nombre')}</b><small>DNI ${esc(p.dni)}</small></div>
+          <span class="go">${ICON.chev}</span>
+        </button>`).join('')}
+    </div>
+    ${state.adminClientes.length >= CLIENTES_LIMIT ? '<p class="hint">Se muestran los primeros ' + CLIENTES_LIMIT + '. Escribí un DNI o nombre para afinar la búsqueda.</p>' : ''}`;
+}
+
+async function openAdminCliente(id){
+  const p = state.adminClientes.find(x => x.id === id); if (!p) return;
+  state.adminCliente = p; state.adminCarpetas = null; state.adminCarpetasErr = false;
+  renderAdmin(); // muestra el cargando
+  const { data, error } = await sb.from('carpetas').select('*, carpeta_datos(*), boletas(*)')
+    .eq(CARPETA_OWNER_COL, id).order('empresa');
+  if (state.adminCliente?.id !== id) return; // el admin ya volvió o abrió otro
+  state.adminCarpetasErr = !!error;
+  state.adminCarpetas = error ? [] : (data || []);
+  renderAdmin();
+}
+
+function renderAdminCliente(body){
+  const p = state.adminCliente, cs = state.adminCarpetas;
+  $('#adminTitle').textContent = p.nombre || 'Cliente';
+  const head = `
+    <button class="link back" data-aclback>${ICON.back} Clientes</button>
+    <p style="margin:0 0 16px;color:var(--muted);font-size:14px">DNI <b style="color:#fff;font-size:16px">${esc(p.dni)}</b></p>`;
+
+  if (cs === null){ body.innerHTML = head + '<div class="spinner"></div>'; return; }
+  if (state.adminCarpetasErr){
+    body.innerHTML = head + '<div class="empty">No se pudieron cargar los documentos de este cliente.<br>Revisá que estén creadas las políticas de administrador en Supabase.</div>';
+    return;
+  }
+  if (!cs.length){ body.innerHTML = head + '<div class="empty">Este cliente todavía no cargó nada.</div>'; return; }
+
+  body.innerHTML = head + `<p class="hint" style="margin:-6px 0 16px">Tocá un dato para copiarlo o una boleta para verla.</p>` + cs.map(f => {
+    const datos = [...(f.carpeta_datos || [])].sort((a, b) => a.created_at.localeCompare(b.created_at));
+    const bols = [...(f.boletas || [])].sort((a, b) => b.created_at.localeCompare(a.created_at));
+    return `
+    <div class="cfolder">
+      <h3>${ICON.folder}${esc(f.empresa)}</h3>
+      ${datos.length ? `
+        <div class="dlist">
+          ${datos.map(d => `
+            <div class="dato">
+              <button class="dm" data-acopy="${d.id}" aria-label="Copiar ${esc(d.etiqueta)}">
+                <small>${esc(d.etiqueta)}</small>
+                <b class="${d.valor ? '' : 'none'}">${d.valor ? esc(d.valor) : 'Sin cargar'}</b>
+              </button>
+            </div>`).join('')}
+        </div>` : ''}
+      ${bols.length ? `
+        <div class="sub">Boletas (${bols.length})</div>
+        <div class="bol-list">
+          ${bols.map(b => `
+            <button class="bol" data-abol="${b.id}" aria-label="Ver ${esc(b.nombre)}">
+              <div class="bi">${boletaExt(b)}</div>
+              <div class="tx"><b>${esc(b.nombre)}</b><small>${fechaAR(b.created_at)}</small></div>
+              <span class="go">${ICON.chev}</span>
+            </button>`).join('')}
+        </div>` : ''}
+      ${!datos.length && !bols.length ? '<div class="empty" style="padding:18px">Carpeta vacía.</div>' : ''}
+    </div>`;
+  }).join('');
+}
+
+async function viewBoletaAdmin(id){
+  const b = (state.adminCarpetas || []).flatMap(f => f.boletas || []).find(x => x.id === id); if (!b) return;
+  const { data, error } = await sb.storage.from(BOLETAS_BUCKET).createSignedUrl(b.path, 300);
+  if (error || !data?.signedUrl) return toast('No se pudo abrir la boleta.');
+  const url = data.signedUrl, isPdf = b.mime === 'application/pdf';
+  state.viewBoleta = null; // solo lectura: sin renombrar ni eliminar
+  $('#viewTitle').textContent = b.nombre;
+  $('#viewBody').innerHTML =
+    (isPdf ? `<div class="pdfbox">Documento PDF</div>` : `<img src="${esc(url)}" alt="${esc(b.nombre)}">`) +
+    `<div class="row-actions" style="margin-top:14px"><a class="btn primary" href="${esc(url)}" target="_blank" rel="noopener">${isPdf ? 'Abrir PDF' : 'Abrir en pestaña nueva'}</a></div>`;
+  openModal('m-viewer');
 }
 
 function renderAdminLocal(body){
@@ -1333,7 +1478,23 @@ function shrinkImage(file, max = 900, type = 'image/webp'){
 $('#adminBody').addEventListener('click', async e => {
   const body = $('#adminBody');
   const tab = e.target.closest('[data-atab]');
-  if (tab){ state.adminTab = tab.dataset.atab; state.adminEdit = null; renderAdmin(); return; }
+  if (tab){ state.adminTab = tab.dataset.atab; state.adminEdit = null; state.adminCliente = null; renderAdmin(); return; }
+
+  // Clientes
+  const cl = e.target.closest('[data-acliente]');
+  if (cl){ openAdminCliente(cl.dataset.acliente); return; }
+  if (e.target.closest('[data-aclback]')){ state.adminCliente = null; state.adminCarpetas = null; renderAdmin(); return; }
+  const ab = e.target.closest('[data-abol]');
+  if (ab){ viewBoletaAdmin(ab.dataset.abol); return; }
+  const ac = e.target.closest('[data-acopy]');
+  if (ac){
+    const d = (state.adminCarpetas || []).flatMap(f => f.carpeta_datos || []).find(x => x.id === ac.dataset.acopy);
+    if (!d?.valor) return toast('Este dato no tiene valor cargado.');
+    try { await navigator.clipboard.writeText(d.valor); toast('Copiado: ' + d.etiqueta); } catch { toast('No se pudo copiar.'); }
+    return;
+  }
+
+  // Trámites
   const ed = e.target.closest('[data-aedit]');
   if (ed){ state.adminEdit = ed.dataset.aedit; renderAdmin(); return; }
   if (e.target.closest('[data-aback]')){ state.adminEdit = null; renderAdmin(); return; }
@@ -1344,6 +1505,13 @@ $('#adminBody').addEventListener('click', async e => {
     if (error) return toast('No se pudo eliminar.');
     toast('Trámite eliminado.'); await renderAdmin(); loadTramites();
   }
+});
+
+// Buscador de clientes (con espera para no consultar en cada letra)
+$('#adminBody').addEventListener('input', e => {
+  if (e.target.id !== 'cliSearch') return;
+  state.adminQ = e.target.value;
+  clearTimeout(cliTimer); cliTimer = setTimeout(loadClientes, 250);
 });
 
 $('#adminBody').addEventListener('change', e => {
@@ -1405,9 +1573,10 @@ if ('serviceWorker' in navigator){
 /* ---------------- Eventos globales ---------------- */
 const openTramites = () => { $('#tramiteSearch').value = ''; renderTramitesModal(); openModal('m-tramites'); };
 $('#btnTramitesTop').onclick  = openTramites;
+$('#btnBoletasTop').onclick   = openDocs;
 $('#btnTramitesHero').onclick = openTramites;
 $('#btnVerTodos').onclick     = openTramites;
-$('#btnLoginTop').onclick     = () => openAuth('login');
+$('#btnLoginTop').onclick     = () => { state.pendingDocs = false; openAuth('login'); };
 $('#btnDocsHero').onclick     = openDocs;
 $('#avatarBtn').onclick       = e => { e.stopPropagation(); $('#menuPop').classList.toggle('open'); };
 $('#menuDocs').onclick        = () => { $('#menuPop').classList.remove('open'); openDocs(); };
