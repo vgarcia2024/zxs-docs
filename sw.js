@@ -34,3 +34,27 @@ self.addEventListener('fetch', e => {
       .catch(() => caches.match(req).then(r => r || caches.match('./index.html')))
   );
 });
+
+// ---- Avisos push ----
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data.json(); } catch {}
+  e.waitUntil(self.registration.showNotification(d.title || 'Zero X Siento', {
+    body: d.body || '',
+    icon: 'icons/icon-192.png',
+    badge: 'icons/icon-192.png',
+    tag: d.tag,
+    renotify: true,
+  }));
+});
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil((async () => {
+    const all = await clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const c of all) {
+      if ('focus' in c) { await c.focus(); c.postMessage({ type: 'open-chat' }); return; }
+    }
+    await clients.openWindow(self.registration.scope + '#chat');
+  })());
+});
