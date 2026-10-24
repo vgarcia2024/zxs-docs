@@ -309,6 +309,8 @@ textarea.input{resize:vertical;min-height:70px}
 .chat-form textarea{flex:1;resize:none;max-height:120px;padding:11px 14px;border:2px solid #333;border-radius:18px;background:#000;color:#fff;font-size:16px;outline:none}
 .chat-form textarea:focus{border-color:var(--accent)}
 @media (max-width:600px){.modal.chat{height:92vh}}
+.chat-push{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--accent-soft);border-top:1px solid var(--line);font-size:13px;flex:none}
+.chat-push span{flex:1}
 
 /* Términos y privacidad */
 .legal h3{font-size:15px;margin:20px 0 6px;letter-spacing:-.01em}
@@ -376,6 +378,7 @@ textarea.input{resize:vertical;min-height:70px}
           <div class="who"><b id="menuName">—</b><small id="menuDni">—</small></div>
           <button id="menuDocs">Mis documentos</button>
           <button id="menuAdmin" class="hidden">Panel de administración</button>
+          <button id="menuPush" class="hidden">Activar avisos</button>
           <button id="menuPass">Cambiar contraseña</button>
           <button id="menuOut" class="out">Cerrar sesión</button>
         </div>
@@ -619,6 +622,7 @@ textarea.input{resize:vertical;min-height:70px}
       <button class="iconbtn" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
+    <div class="chat-push hidden" id="chatPushBar"><span id="chatPushTxt"></span><button class="btn sm primary" type="button" id="chatPushBtn">Activar</button></div>
     <form class="chat-form" id="chatForm">
       <textarea id="chatInput" rows="1" maxlength="2000" placeholder="Escribí tu mensaje…" aria-label="Mensaje"></textarea>
       <button class="btn primary sm" type="submit" id="chatSend">Enviar</button>
@@ -792,10 +796,11 @@ async function onSession(session){
   await loadProfile();
   renderSession();
   if (state.user) await loadCarpetas(); else { state.carpetas = []; state.openCarpeta = null; }
-  if (state.user){ chatSubscribe(); refreshUnread(); } else { chatUnsub(); chat.unread = chat.adminUnread = 0; paintBadges(); }
+  if (state.user){ chatSubscribe(); refreshUnread(); pushSync(); } else { chatUnsub(); chat.unread = chat.adminUnread = 0; paintBadges(); }
   // Si tocó "Tus boletas" o el chat sin estar ingresado, lo llevamos directo apenas entra
   if (state.user && state.pendingDocs){ state.pendingDocs = false; openDocs(); }
   if (state.user && state.pendingChat){ state.pendingChat = false; openChat(); }
+  if (state.user && location.hash === '#chat'){ history.replaceState(null, '', location.pathname + location.search); goChat(); }
 }
 
 /* ---------------- Ayuda / contacto ---------------- */
@@ -999,6 +1004,7 @@ $('#passForm').addEventListener('submit', async e => {
 });
 
 async function logout(){
+  await pushForget();
   chatUnsub();
   await sb.auth.signOut(); closeAll(); toast('Sesión cerrada.');
 }
@@ -2039,6 +2045,7 @@ async function showChat(title){
   $('#chatMsgs').innerHTML = '<div class="spinner"></div>';
   $('#chatInput').value = '';
   openModal('m-chat');
+  updatePushBar();
 }
 
 // Cliente
@@ -2133,6 +2140,98 @@ $('#chatInput').addEventListener('keydown', e => {
   }
 });
 
+/* ---------------- Avisos push ---------------- */
+const VAPID_PUBLIC = 'BMvi0L3OKPadEujNQg-jn1aRGMta_cAo4LnQUSCrWJ_QKTETNIpmlOtFT0LlVSoL-M4XNkdyBxjWpPgsHj5cPGs';
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const pushOK = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+const b64ToU8 = b => { const p = '='.repeat((4 - b.length % 4) % 4), r = atob((b + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from([...r].map(c => c.charCodeAt(0))); };
+
+// 'on' | 'off' | 'denied' | 'ios-install' | 'unsupported'
+async function pushState(){
+  if (!pushOK()) return (isIOS && !isStandalone()) ? 'ios-install' : 'unsupported';
+  if (Notification.permission === 'denied') return 'denied';
+  if (Notification.permission === 'granted'){
+    try { const reg = await navigator.serviceWorker.ready; return (await reg.pushManager.getSubscription()) ? 'on' : 'off'; } catch { return 'off'; }
+  }
+  return 'off';
+}
+
+async function savePushSub(sub){
+  const j = sub.toJSON();
+  await sb.rpc('push_guardar', { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth });
+}
+
+async function enablePush(){
+  if (!state.user) return;
+  const st = await pushState();
+  if (st === 'ios-install') return toast('En iPhone: Compartir → Agregar a inicio, y abrí la app desde ahí.');
+  if (st === 'denied') return toast('Los avisos están bloqueados en la configuración del navegador.');
+  if (st === 'unsupported') return toast('Este navegador no permite avisos.');
+  if (st === 'on') return toast('Los avisos ya están activados.');
+  try {
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') return toast('No se activaron los avisos.');
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToU8(VAPID_PUBLIC) });
+    await savePushSub(sub);
+    toast('Avisos activados.');
+  } catch (ex){
+    console.log('push error →', ex); toast('No se pudieron activar los avisos.');
+  }
+  refreshPushUI(); updatePushBar();
+}
+
+// Al iniciar sesión: si este dispositivo ya tenía avisos, lo vinculamos a esta cuenta
+async function pushSync(){
+  try {
+    if (pushOK() && Notification.permission === 'granted'){
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) await savePushSub(sub);
+    }
+  } catch {}
+  refreshPushUI();
+}
+
+// Al cerrar sesión: este dispositivo deja de recibir avisos de esta cuenta
+async function pushForget(){
+  try {
+    if (!pushOK()) return;
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (sub) await sb.rpc('push_borrar', { p_endpoint: sub.endpoint });
+  } catch {}
+}
+
+async function refreshPushUI(){
+  const st = await pushState();
+  $('#menuPush').classList.toggle('hidden', !(st === 'off' || st === 'ios-install'));
+}
+
+async function updatePushBar(){
+  const st = await pushState();
+  $('#chatPushBar').classList.toggle('hidden', !(st === 'off' || st === 'ios-install'));
+  $('#chatPushTxt').textContent = st === 'ios-install'
+    ? 'Para recibir avisos en iPhone: tocá Compartir, elegí “Agregar a inicio” y abrí la app desde ahí.'
+    : 'Activá los avisos para enterarte cuando haya un mensaje nuevo.';
+  $('#chatPushBtn').classList.toggle('hidden', st !== 'off');
+}
+$('#chatPushBtn').addEventListener('click', enablePush);
+
+// Al tocar una notificación: abrir el chat que corresponda
+async function goChat(){
+  if (!state.user) return;
+  if (state.profile?.is_admin){
+    state.adminEdit = null; state.adminTab = 'mensajes'; state.adminCliente = null; state.adminSub = null; state.adminDato = null;
+    await renderAdmin(); openModal('m-admin');
+  } else openChat();
+}
+if ('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('message', e => { if (e.data?.type === 'open-chat') goChat(); });
+}
+
 /* ---------------- Instalar PWA ---------------- */
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
@@ -2159,6 +2258,7 @@ $('#chatFab').onclick         = openChat;
 $('#avatarBtn').onclick       = e => { e.stopPropagation(); $('#menuPop').classList.toggle('open'); };
 $('#menuDocs').onclick        = () => { $('#menuPop').classList.remove('open'); openDocs(); };
 $('#menuAdmin').onclick       = () => { $('#menuPop').classList.remove('open'); openAdmin(); };
+$('#menuPush').onclick        = () => { $('#menuPop').classList.remove('open'); enablePush(); };
 $('#menuPass').onclick        = () => { $('#menuPop').classList.remove('open'); openModal('m-pass'); };
 $('#menuOut').onclick         = () => { $('#menuPop').classList.remove('open'); logout(); };
 $('#year').textContent = new Date().getFullYear();
