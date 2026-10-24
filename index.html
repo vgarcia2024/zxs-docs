@@ -225,7 +225,7 @@ textarea.input{resize:vertical;min-height:70px}
 .fitem .ic svg{width:20px;height:20px}
 .fitem .tx{flex:1;min-width:0}
 .fitem .tx b{display:block;font-size:16px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fitem .tx small{color:var(--muted);font-size:13px}
+.fitem .tx small{color:var(--muted);font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .go{color:var(--muted);flex:none;display:grid;place-items:center}
 .go svg{width:18px;height:18px}
 
@@ -286,6 +286,29 @@ textarea.input{resize:vertical;min-height:70px}
 .modal.admin{width:100%;max-width:720px;height:min(88vh,760px)}
 #adminBody{flex:1;min-height:0}
 @media (max-width:600px){.modal.admin{max-width:none;height:92vh}}
+
+/* ---------- Chat ---------- */
+.chat-fab{position:fixed;right:18px;bottom:calc(18px + var(--safe-b));z-index:40;display:flex;align-items:center;gap:8px;padding:14px 20px;border-radius:999px;background:var(--accent);color:#000;font-weight:800;font-size:15px;box-shadow:var(--shadow)}
+.chat-fab:active{transform:scale(.97)}
+.ubadge{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#000;color:var(--accent);font-size:12px;font-weight:900;display:inline-grid;place-items:center;flex:none}
+.fitem .ubadge{background:var(--accent);color:#000}
+.udot{position:absolute;top:-1px;right:-1px;width:12px;height:12px;border-radius:50%;background:var(--danger);border:2px solid #000;pointer-events:none}
+.tabs.t4{grid-template-columns:repeat(4,1fr)}
+.tabs.t4 button{padding:10px 4px;font-size:13px}
+.modal.chat{height:min(88vh,680px)}
+.chat-msgs{flex:1;min-height:0;overflow-y:auto;padding:16px 16px 8px;display:flex;flex-direction:column;gap:6px;-webkit-overflow-scrolling:touch}
+.cday{align-self:center;font-size:12px;font-weight:700;color:var(--muted);margin:10px 0 4px}
+.cmsg{max-width:80%;display:flex;flex-direction:column}
+.cmsg.me{align-self:flex-end;align-items:flex-end}
+.cmsg.them{align-self:flex-start;align-items:flex-start}
+.cb{padding:10px 14px;border-radius:18px;font-size:15px;white-space:pre-wrap;word-break:break-word}
+.me .cb{background:var(--accent);color:#000;border-bottom-right-radius:6px}
+.them .cb{background:#242424;color:#fff;border-bottom-left-radius:6px}
+.cmsg small{color:var(--muted);font-size:11px;margin:2px 6px 0}
+.chat-form{display:flex;gap:8px;align-items:flex-end;padding:12px 14px calc(12px + var(--safe-b));border-top:1px solid var(--line);flex:none}
+.chat-form textarea{flex:1;resize:none;max-height:120px;padding:11px 14px;border:2px solid #333;border-radius:18px;background:#000;color:#fff;font-size:16px;outline:none}
+.chat-form textarea:focus{border-color:var(--accent)}
+@media (max-width:600px){.modal.chat{height:92vh}}
 
 /* Términos y privacidad */
 .legal h3{font-size:15px;margin:20px 0 6px;letter-spacing:-.01em}
@@ -348,6 +371,7 @@ textarea.input{resize:vertical;min-height:70px}
       <button class="btn sm primary" id="btnLoginTop">Ingresar</button>
       <div class="menu hidden" id="userMenu">
         <button class="avatar" id="avatarBtn" aria-label="Mi cuenta">?</button>
+        <span class="udot hidden" id="avatarDot"></span>
         <div class="menu-pop" id="menuPop">
           <div class="who"><b id="menuName">—</b><small id="menuDni">—</small></div>
           <button id="menuDocs">Mis documentos</button>
@@ -562,6 +586,7 @@ textarea.input{resize:vertical;min-height:70px}
       </ul>
       <p>No te pedimos domicilio, teléfono, correo electrónico ni ningún otro dato personal para crear la cuenta.</p>
       <p>Todo lo demás (números de cliente, NIS, partidas, titulares, fotos o PDF de boletas) lo cargás vos, únicamente si querés. Tené en cuenta que una boleta puede mostrar datos como tu nombre, domicilio o consumos, así que subí solo lo que necesites.</p>
+      <p>Si usás el chat, guardamos los mensajes que intercambiás con nosotros. Los pueden ver vos y el personal autorizado de Zero X Siento.</p>
 
       <h3>3. Para qué los usamos</h3>
       <p>Solamente para que puedas ingresar a tu cuenta, ver lo que guardaste y para que el personal del local pueda atenderte más rápido. No los usamos para publicidad, no los vendemos ni los cedemos a terceros, y no los usamos para ninguna otra finalidad.</p>
@@ -586,6 +611,21 @@ textarea.input{resize:vertical;min-height:70px}
   </div>
 </div>
 
+<!-- ====================== MODAL: CHAT ====================== -->
+<div class="overlay" id="m-chat" role="dialog" aria-modal="true">
+  <div class="modal chat">
+    <div class="modal-head">
+      <h2 id="chatTitle">Chat</h2>
+      <button class="iconbtn" data-close aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs"></div>
+    <form class="chat-form" id="chatForm">
+      <textarea id="chatInput" rows="1" maxlength="2000" placeholder="Escribí tu mensaje…" aria-label="Mensaje"></textarea>
+      <button class="btn primary sm" type="submit" id="chatSend">Enviar</button>
+    </form>
+  </div>
+</div>
+
 <!-- ====================== MODAL: VER BOLETA (va último para quedar arriba del resto) ====================== -->
 <div class="overlay" id="m-viewer" role="dialog" aria-modal="true">
   <div class="modal">
@@ -596,6 +636,10 @@ textarea.input{resize:vertical;min-height:70px}
     <div class="modal-body viewer" id="viewBody"></div>
   </div>
 </div>
+
+<button class="chat-fab" id="chatFab" aria-label="Chat con Zero X Siento">
+  Escribinos <span class="ubadge hidden" id="chatBadge">0</span>
+</button>
 
 <div class="toast" id="toast"></div>
 
@@ -651,7 +695,7 @@ const state = {
   viewBoleta: null,
   authMode: 'login',
   adminEdit: null, // null = lista, 'new' o id
-  adminTab: 'tramites', // 'tramites' | 'clientes' | 'local'
+  adminTab: 'tramites', // 'tramites' | 'clientes' | 'mensajes' | 'local'
   adminQ: '',           // búsqueda de clientes
   adminClientes: [],    // resultados de la búsqueda
   adminCliente: null,   // cliente abierto (fila de profiles)
@@ -662,6 +706,7 @@ const state = {
   adminFid: null,       // carpeta a la que se está subiendo una boleta
   viewAdmin: false,     // el visor de boletas está abierto desde el panel admin
   pendingDocs: false,   // abrir "Mis documentos" apenas ingrese
+  pendingChat: false,   // abrir el chat apenas ingrese
   local: null,     // datos de ayuda/contacto
   uploading: false,
 };
@@ -688,8 +733,9 @@ function openModal(id){
 function closeModal(id){
   $('#' + id).classList.remove('open');
   if (!$('.overlay.open')) document.body.classList.remove('lock');
+  if (id === 'm-chat'){ chat.convId = null; if (adminMsgsVisible()) renderAdmin(); }
 }
-function closeAll(){ $$('.overlay.open').forEach(o => o.classList.remove('open')); document.body.classList.remove('lock'); }
+function closeAll(){ $$('.overlay.open').forEach(o => o.classList.remove('open')); document.body.classList.remove('lock'); chat.convId = null; }
 
 document.addEventListener('click', e => {
   const closer = e.target.closest('[data-close]');
@@ -746,8 +792,10 @@ async function onSession(session){
   await loadProfile();
   renderSession();
   if (state.user) await loadCarpetas(); else { state.carpetas = []; state.openCarpeta = null; }
-  // Si tocó "Tus boletas" sin estar ingresado, lo llevamos directo apenas entra
+  if (state.user){ chatSubscribe(); refreshUnread(); } else { chatUnsub(); chat.unread = chat.adminUnread = 0; paintBadges(); }
+  // Si tocó "Tus boletas" o el chat sin estar ingresado, lo llevamos directo apenas entra
   if (state.user && state.pendingDocs){ state.pendingDocs = false; openDocs(); }
+  if (state.user && state.pendingChat){ state.pendingChat = false; openChat(); }
 }
 
 /* ---------------- Ayuda / contacto ---------------- */
@@ -951,6 +999,7 @@ $('#passForm').addEventListener('submit', async e => {
 });
 
 async function logout(){
+  chatUnsub();
   await sb.auth.signOut(); closeAll(); toast('Sesión cerrada.');
 }
 
@@ -1298,9 +1347,10 @@ async function openAdmin(){
 }
 
 const adminTabsHTML = active => `
-  <div class="tabs t3">
+  <div class="tabs t4">
     <button data-atab="tramites" class="${active === 'tramites' ? 'on' : ''}">Trámites</button>
     <button data-atab="clientes" class="${active === 'clientes' ? 'on' : ''}">Clientes</button>
+    <button data-atab="mensajes" class="${active === 'mensajes' ? 'on' : ''}">Chat${chat.adminUnread ? ` (${chat.adminUnread})` : ''}</button>
     <button data-atab="local" class="${active === 'local' ? 'on' : ''}">Local</button>
   </div>`;
 
@@ -1309,6 +1359,7 @@ async function renderAdmin(){
   if (state.adminEdit) return renderAdminForm(body);
   if (state.adminTab === 'local') return renderAdminLocal(body);
   if (state.adminTab === 'clientes') return renderAdminClientes(body);
+  if (state.adminTab === 'mensajes') return renderAdminMensajes(body);
 
   $('#adminTitle').textContent = 'Administrar';
   body.innerHTML = '<div class="spinner"></div>';
@@ -1447,7 +1498,10 @@ function renderAdminCliente(body){
   $('#adminTitle').textContent = p.nombre || 'Cliente';
   const head = `
     <button class="link back" data-aclback>${ICON.back} Clientes</button>
-    <p style="margin:0 0 16px;color:var(--muted);font-size:14px">DNI <b style="color:#fff;font-size:16px">${esc(p.dni)}</b></p>`;
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px">
+      <p style="color:var(--muted);font-size:14px">DNI <b style="color:#fff;font-size:16px">${esc(p.dni)}</b></p>
+      <button class="btn sm hl" data-achatcli="${p.id}">Chat</button>
+    </div>`;
 
   if (cs === null){ body.innerHTML = head + '<div class="spinner"></div>'; return; }
   if (state.adminCarpetasErr){
@@ -1791,6 +1845,12 @@ $('#adminBody').addEventListener('click', async e => {
   const tab = e.target.closest('[data-atab]');
   if (tab){ state.adminTab = tab.dataset.atab; state.adminEdit = null; state.adminCliente = null; state.adminSub = null; state.adminDato = null; renderAdmin(); return; }
 
+  // Chat
+  const ach = e.target.closest('[data-achat]');
+  if (ach){ openAdminChat(ach.dataset.achat, ach.dataset.name); return; }
+  const achc = e.target.closest('[data-achatcli]');
+  if (achc){ openAdminChatCliente(achc.dataset.achatcli); return; }
+
   // Clientes
   const cl = e.target.closest('[data-acliente]');
   if (cl){ openAdminCliente(cl.dataset.acliente); return; }
@@ -1893,6 +1953,186 @@ $('#adminBody').addEventListener('submit', async e => {
   }
 });
 
+/* ---------------- Chat ---------------- */
+const chat = { convId: null, asAdmin: false, msgs: [], ch: null, uid: null, unread: 0, adminUnread: 0 };
+const adminMsgsVisible = () => $('#m-admin').classList.contains('open') && state.adminTab === 'mensajes'
+  && !state.adminEdit && !$('#m-chat').classList.contains('open');
+
+function chatUnsub(){
+  if (chat.ch){ sb.removeChannel(chat.ch); chat.ch = null; chat.uid = null; }
+}
+function chatSubscribe(){
+  if (chat.ch && chat.uid === state.user.id) return;
+  chatUnsub(); chat.uid = state.user.id;
+  chat.ch = sb.channel('chat-' + state.user.id)
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensajes' }, p => onChatMsg(p.new))
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'conversaciones' }, () => {
+      refreshUnread(); if (adminMsgsVisible()) renderAdmin();
+    })
+    .subscribe();
+}
+
+async function refreshUnread(){
+  if (!state.user) return;
+  if (state.profile?.is_admin){
+    const { data } = await sb.from('conversaciones').select('no_leidos_admin').gt('no_leidos_admin', 0);
+    chat.adminUnread = (data || []).reduce((s, c) => s + c.no_leidos_admin, 0);
+  } else {
+    const { data } = await sb.from('conversaciones').select('no_leidos_cliente').eq('cliente_id', state.user.id).maybeSingle();
+    chat.unread = data?.no_leidos_cliente || 0;
+  }
+  paintBadges();
+}
+
+function paintBadges(){
+  const isA = !!state.profile?.is_admin && !!state.user, n = isA ? chat.adminUnread : chat.unread;
+  $('#chatFab').classList.toggle('hidden', isA);
+  $('#chatBadge').textContent = n;
+  $('#chatBadge').classList.toggle('hidden', !n || isA);
+  $('#avatarDot').classList.toggle('hidden', !(isA && n));
+  $('#menuAdmin').textContent = 'Panel de administración' + (isA && n ? ` (${n})` : '');
+}
+
+function onChatMsg(m){
+  const isA = !!state.profile?.is_admin, incoming = isA ? !m.es_admin : m.es_admin;
+  if (chat.convId === m.conversacion_id && $('#m-chat').classList.contains('open')){
+    addMsg(m); if (incoming) markRead(); return;
+  }
+  if (incoming) toast(isA ? 'Nuevo mensaje de un cliente.' : 'Tenés un mensaje nuevo de Zero X Siento.');
+}
+
+function addMsg(m){
+  if (chat.msgs.some(x => x.id === m.id)) return;
+  chat.msgs.push(m); renderChat();
+}
+
+async function markRead(){
+  if (!chat.convId) return;
+  await sb.rpc('chat_marcar_leido', { conv: chat.convId });
+  refreshUnread();
+}
+
+async function loadMsgs(){
+  const { data } = await sb.from('mensajes').select('*').eq('conversacion_id', chat.convId)
+    .order('created_at').limit(300);
+  chat.msgs = data || [];
+}
+
+function renderChat(){
+  const box = $('#chatMsgs');
+  if (!chat.msgs.length){
+    box.innerHTML = `<div class="empty" style="margin:auto 0">${chat.asAdmin ? 'Todavía no hay mensajes. Escribí el primero.' : 'Escribinos tu consulta y te respondemos por acá.'}</div>`;
+    return;
+  }
+  let last = '';
+  box.innerHTML = chat.msgs.map(m => {
+    const day = fechaAR(m.created_at);
+    const sep = day !== last ? `<div class="cday">${day}</div>` : ''; last = day;
+    const hora = new Date(m.created_at).toLocaleTimeString('es-AR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
+    return sep + `<div class="cmsg ${m.es_admin === chat.asAdmin ? 'me' : 'them'}"><div class="cb">${esc(m.texto)}</div><small>${hora}</small></div>`;
+  }).join('');
+  box.scrollTop = box.scrollHeight;
+}
+
+async function showChat(title){
+  $('#chatTitle').textContent = title;
+  $('#chatMsgs').innerHTML = '<div class="spinner"></div>';
+  $('#chatInput').value = '';
+  openModal('m-chat');
+}
+
+// Cliente
+async function openChat(){
+  if (!state.user){ state.pendingChat = true; openAuth('login'); return; }
+  chat.asAdmin = false; chat.msgs = [];
+  await showChat('Chat con Zero X Siento');
+  const { data: conv } = await sb.from('conversaciones').select('id,no_leidos_cliente').eq('cliente_id', state.user.id).maybeSingle();
+  chat.convId = conv?.id || null;
+  if (conv) await loadMsgs();
+  renderChat();
+  if (conv?.no_leidos_cliente) markRead();
+  setTimeout(() => $('#chatInput').focus(), 80);
+}
+
+// Admin
+async function openAdminChat(convId, nombre){
+  chat.asAdmin = true; chat.msgs = [];
+  await showChat(nombre || 'Cliente');
+  chat.convId = convId;
+  await loadMsgs(); renderChat(); markRead();
+  setTimeout(() => $('#chatInput').focus(), 80);
+}
+
+async function openAdminChatCliente(cid){
+  let { data: c } = await sb.from('conversaciones').select('id').eq('cliente_id', cid).maybeSingle();
+  if (!c){
+    const r = await sb.from('conversaciones').insert({ cliente_id: cid }).select('id').single();
+    if (r.error) return toast('No se pudo abrir el chat.');
+    c = r.data;
+  }
+  openAdminChat(c.id, state.adminCliente?.nombre);
+}
+
+async function renderAdminMensajes(body){
+  $('#adminTitle').textContent = 'Administrar';
+  const tabs = adminTabsHTML('mensajes');
+  body.innerHTML = tabs + '<div class="spinner"></div>';
+  const { data, error } = await sb.from('conversaciones')
+    .select('id,cliente_id,ultimo_mensaje_at,ultimo_texto,no_leidos_admin')
+    .order('ultimo_mensaje_at', { ascending: false }).limit(50);
+  if (state.adminTab !== 'mensajes' || state.adminEdit) return;
+  if (error){ body.innerHTML = tabs + '<div class="empty">No se pudieron cargar los mensajes.</div>'; return; }
+  if (!data.length){ body.innerHTML = tabs + '<div class="empty">Todavía no hay conversaciones.<br>Podés iniciar una desde la ficha de un cliente.</div>'; return; }
+  const { data: ps } = await sb.from('profiles').select('id,dni,nombre').in('id', data.map(c => c.cliente_id));
+  if (state.adminTab !== 'mensajes' || state.adminEdit) return;
+  const P = Object.fromEntries((ps || []).map(p => [p.id, p]));
+  body.innerHTML = tabs + '<div class="flist">' + data.map(c => {
+    const p = P[c.cliente_id] || {}, nom = p.nombre || 'Cliente';
+    return `
+      <button class="fitem" data-achat="${c.id}" data-name="${esc(nom)}">
+        <div class="ic" style="font-weight:900;font-size:18px">${esc(nom[0].toUpperCase())}</div>
+        <div class="tx"><b>${esc(nom)}</b><small>${esc(c.ultimo_texto || '')}</small></div>
+        ${c.no_leidos_admin ? `<span class="ubadge">${c.no_leidos_admin}</span>` : ''}
+        <span class="go">${ICON.chev}</span>
+      </button>`;
+  }).join('') + '</div>';
+}
+
+async function sendChat(texto){
+  if (!chat.convId){
+    const { data, error } = await sb.from('conversaciones').insert({ cliente_id: state.user.id }).select('id').single();
+    if (error){
+      // Si ya existía (otra pestaña), la buscamos
+      const { data: ex } = await sb.from('conversaciones').select('id').eq('cliente_id', state.user.id).maybeSingle();
+      if (!ex) return false;
+      chat.convId = ex.id;
+    } else chat.convId = data.id;
+  }
+  const { data, error } = await sb.from('mensajes').insert({ conversacion_id: chat.convId, texto }).select().single();
+  if (error) return false;
+  addMsg(data); return true;
+}
+
+$('#chatForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const inp = $('#chatInput'), btn = $('#chatSend'), t = inp.value.trim();
+  if (!t) return;
+  btn.disabled = true;
+  const ok = await sendChat(t);
+  btn.disabled = false;
+  if (ok) inp.value = ''; else toast('No se pudo enviar. Probá de nuevo.');
+  inp.style.height = 'auto'; inp.focus();
+});
+$('#chatInput').addEventListener('input', e => {
+  e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+});
+// En computadora: Enter envía, Shift+Enter hace salto de línea
+$('#chatInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey && matchMedia('(pointer:fine)').matches){
+    e.preventDefault(); $('#chatForm').requestSubmit();
+  }
+});
+
 /* ---------------- Instalar PWA ---------------- */
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
@@ -1913,8 +2153,9 @@ $('#btnTramitesTop').onclick  = openTramites;
 $('#btnBoletasTop').onclick   = openDocs;
 $('#btnTramitesHero').onclick = openTramites;
 $('#btnVerTodos').onclick     = openTramites;
-$('#btnLoginTop').onclick     = () => { state.pendingDocs = false; openAuth('login'); };
+$('#btnLoginTop').onclick     = () => { state.pendingDocs = false; state.pendingChat = false; openAuth('login'); };
 $('#btnDocsHero').onclick     = openDocs;
+$('#chatFab').onclick         = openChat;
 $('#avatarBtn').onclick       = e => { e.stopPropagation(); $('#menuPop').classList.toggle('open'); };
 $('#menuDocs').onclick        = () => { $('#menuPop').classList.remove('open'); openDocs(); };
 $('#menuAdmin').onclick       = () => { $('#menuPop').classList.remove('open'); openAdmin(); };
